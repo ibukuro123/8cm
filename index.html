@@ -23,11 +23,8 @@
   body{margin:0;color:var(--ink);min-height:100vh;
     background-color:var(--wood);
     background-image:
-      radial-gradient(120% 60% at 8% 46%, rgba(255,248,222,.42), rgba(255,248,222,0) 46%),
-      url("tex/wood.jpg");
-    background-size:auto, 760px auto;
-    background-repeat:no-repeat, repeat;
-    background-attachment:fixed, fixed;
+      repeating-linear-gradient(90deg, rgba(110,80,40,.055) 0 2px, transparent 2px 11px),
+      repeating-linear-gradient(90deg, rgba(110,80,40,.035) 0 1px, transparent 1px 29px);
     font-family:"Hiragino Mincho ProN","Yu Mincho","YuMincho","Noto Serif JP","Noto Serif CJK JP",serif;
     padding:env(safe-area-inset-top,0) 0 env(safe-area-inset-bottom,0);}
   /* 柱の刻み（画面の左端）＋当たる光 */
