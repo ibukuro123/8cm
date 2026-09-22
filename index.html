@@ -48,7 +48,14 @@
   .tile:hover img,.tile:focus-visible img,.tile[aria-expanded="true"] img{transform:translateY(-5px);}
   .tile .tt{display:block;margin-top:8px;font-size:12.5px;line-height:1.5;letter-spacing:.04em;}
   .tile .badge{display:block;margin-top:3px;font-size:11px;color:var(--shu);}
-  .panel{position:relative;margin-top:22px;background:var(--paper);border:1px solid rgba(60,45,20,.35);padding:16px;
+  .resume{position:relative;margin-top:24px;background:rgba(239,234,222,.72);border:1px solid rgba(90,80,60,.3);padding:13px 14px;}
+  .resume h2{margin:0 0 10px;font-size:12px;letter-spacing:.22em;color:var(--soft);font-weight:400;}
+  .resume ul{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:11px;}
+  .resume li{display:flex;align-items:center;gap:11px;}
+  .resume img{width:34px;height:auto;display:block;box-shadow:0 3px 8px rgba(25,18,8,.3);}
+  .resume .rt{flex:1 1 auto;font-size:13.5px;letter-spacing:.04em;}
+  .resume .btn{padding:6px 11px;font-size:12.5px;}
+  .panel{position:relative;grid-column:1/-1;margin-top:4px;background:var(--paper);border:1px solid rgba(60,45,20,.35);padding:16px;
     box-shadow:0 8px 20px rgba(25,18,8,.28);}
   .panel[hidden]{display:none;}
   .panel h2{margin:0;font-size:18px;letter-spacing:.05em;}
@@ -85,8 +92,9 @@
     <div class="by">胃袋一二三</div>
     <p class="lead">身長八センチメートルの、小さき者たちの物語です。発表順に五作、この場で最後まで読めます。表紙を選ぶと、あらすじが開きます。</p>
   </header>
+  <section class="resume" id="resume" hidden></section>
   <main id="list"></main>
-  <div class="panel" id="panel" hidden></div>
+  <div class="panel" id="panel" hidden></div><!-- 行の下に差しこむ -->
   <footer>© 2026 胃袋一二三</footer>
 </div>
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
@@ -114,6 +122,22 @@
     list.classList.add('deliver');
     [].slice.call(list.querySelectorAll('.tile')).forEach(function(t,i){ t.style.animationDelay=(i*150)+'ms'; });
   }
+  function placePanel(tile){
+    var tiles=[].slice.call(list.querySelectorAll('.tile')), top=tile.offsetTop, lastInRow=tile;
+    tiles.forEach(function(t){ if(Math.abs(t.offsetTop-top)<4) lastInRow=t; });
+    if(lastInRow.nextSibling!==panel) lastInRow.parentNode.insertBefore(panel, lastInRow.nextSibling);
+  }
+  (function resume(){
+    var box=document.getElementById('resume');
+    var got=BOOKS.filter(function(b){ return bookmarked(b); });
+    if(!got.length) return;
+    box.innerHTML='<h2>読みかけの本</h2><ul>'+got.map(function(b){
+      return '<li><img src="covers/'+b.slug+'.jpg" alt="" width="600" height="960" loading="lazy">'
+        + '<span class="rt">'+esc(b.t)+'</span>'
+        + '<a class="btn cont" href="'+b.slug+'.html?shiori=1">しおりの続きから</a></li>';
+    }).join('')+'</ul>';
+    box.hidden=false;
+  })();
   function open(slug,scroll){
     var b=null; BOOKS.forEach(function(x){ if(x.slug===slug) b=x; });
     var tile=list.querySelector('.tile[data-slug="'+slug+'"]'); if(!b||!tile) return;
@@ -123,6 +147,7 @@
       + '<a class="btn" href="'+b.slug+'.html">'+(bookmarked(b)?'最初から':'最初から読む')+'</a>'
       + (bookmarked(b)?'<a class="btn cont" href="'+b.slug+'.html?shiori=1">しおりの続きから</a>':'')
       + '<button class="btn cart share" type="button" data-share="'+b.slug+'" aria-label="この作品を共有する">'+CART+'<span>運ぶ</span></button></p>';
+    placePanel(tile);
     panel.hidden=false; openSlug=slug;
     if(scroll) panel.scrollIntoView({block:'nearest',behavior:'smooth'});
   }
@@ -145,6 +170,9 @@
   });
   var toast=document.getElementById('toast'), tid=null;
   function say(m){ toast.textContent=m; toast.classList.add('on'); clearTimeout(tid); tid=setTimeout(function(){toast.classList.remove('on');},2200); }
+  window.addEventListener('resize', function(){
+    if(openSlug){ var t=list.querySelector('.tile[data-slug="'+openSlug+'"]'); if(t) placePanel(t); }
+  });
   window.addEventListener('resize',fitTitle); window.addEventListener('load',fitTitle); fitTitle();
 })();
 </script>
