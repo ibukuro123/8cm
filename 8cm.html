@@ -682,6 +682,17 @@ window.addEventListener('resize',()=>{ clearTimeout(rt); const keep=currentBlock
 
 if(document.fonts && document.fonts.ready){ document.fonts.ready.then(()=>layout(null)); }
 layout(null);
+
+/* shioriAuto: トップページからの「しおりの続きから」 */
+if(/[?&]shiori=1/.test(location.search)){
+  var _try=function(n){
+    try{
+      if(bm){ var p=pageOfAnchor(bm); if(p>0){ idx=p; update(0); return; } }
+    }catch(e){}
+    if(n>0) setTimeout(function(){ _try(n-1); }, 300);
+  };
+  setTimeout(function(){ _try(6); }, 300);
+}
 </script>
 </body>
 </html>
