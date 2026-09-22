@@ -225,6 +225,7 @@
   .foot .bmjump[hidden]{display:none;}
   .sheet .bm-item{width:100%;text-align:left;font:inherit;font-size:13px;letter-spacing:.12em;background:none;border:1px solid rgba(168,64,44,.5);color:var(--shu);padding:10px 12px;margin:0 0 14px;cursor:pointer;}
   .sheet .bm-item[hidden]{display:none;}
+
 </style>
 </head>
 <body class="vert">
@@ -682,6 +683,17 @@ window.addEventListener('resize',()=>{ clearTimeout(rt); const keep=currentBlock
 
 if(document.fonts && document.fonts.ready){ document.fonts.ready.then(()=>layout(null)); }
 layout(null);
+
+/* shioriAuto: トップページからの「しおりの続きから」 */
+if(/[?&]shiori=1/.test(location.search)){
+  var _try=function(n){
+    try{
+      if(bm){ var p=pageOfAnchor(bm); if(p>0){ idx=p; update(0); return; } }
+    }catch(e){}
+    if(n>0) setTimeout(function(){ _try(n-1); }, 300);
+  };
+  setTimeout(function(){ _try(6); }, 300);
+}
 </script>
 </body>
 </html>
