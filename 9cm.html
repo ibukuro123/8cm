@@ -225,6 +225,19 @@
   .foot .bmjump[hidden]{display:none;}
   .sheet .bm-item{width:100%;text-align:left;font:inherit;font-size:13px;letter-spacing:.12em;background:none;border:1px solid rgba(168,64,44,.5);color:var(--shu);padding:10px 12px;margin:0 0 14px;cursor:pointer;}
   .sheet .bm-item[hidden]{display:none;}
+
+  /* 札が五枚めくれる */
+  #rulerSvg .back{fill:none;stroke:#5c5343;stroke-width:1;opacity:.5;}
+  #rulerSvg .backline{stroke:#5c5343;stroke-width:1;opacity:.35;}
+  #rulerSvg .face,#rulerSvg .pip{opacity:0;}
+  #rulerSvg .card.on .back,#rulerSvg .card.on .backline{opacity:0;}
+  #rulerSvg .card.on .face{opacity:1;fill:#efeade;stroke:var(--pencil);stroke-width:1.1;}
+  #rulerSvg .card.on .pip{opacity:1;fill:var(--pencil);}
+  #rulerSvg .card.on.fin .pip{fill:var(--shu);}
+  #rulerSvg .card.on.fin .face{stroke:var(--shu);}
+  #rulerSvg .card.flip{animation:cardflip .46s ease-in-out;}
+  @keyframes cardflip{0%{transform:scaleX(1);}50%{transform:scaleX(.06);}100%{transform:scaleX(1);}}
+  @media (prefers-reduced-motion:reduce){#rulerSvg .card.flip{animation:none;}}
 </style>
 </head>
 <body class="vert">
@@ -232,10 +245,8 @@
   <div class="bar">
     <button id="tocBtn" aria-haspopup="dialog">目次</button>
     <div class="ruler" aria-hidden="true">
-      <span class="rn">一枚目</span>
-      <svg id="rulerSvg" viewBox="0 0 300 26" preserveAspectRatio="none"></svg>
-      <span class="rn">五枚目</span>
-    </div>
+            <svg id="rulerSvg" viewBox="0 0 300 26" preserveAspectRatio="xMidYMid meet"></svg>
+          </div>
     <button id="bmBtn" aria-pressed="false" aria-label="このページにしおりをはさむ">しおり</button>
     <button id="setBtn" aria-haspopup="dialog">表示</button>
   </div>
@@ -301,26 +312,18 @@ const KERN  = 1.03;         // letter-spacing .03em ぶん
 let vertical = true, sizeIdx = 1, pages = [], chapPage = [], idx = 0, spread = false;
 
 /* ---------- ruler ---------- */
-const MOTIF = 'route';
+const MOTIF = 'cards';
 (function drawRuler(){
   const svg = document.getElementById('rulerSvg');
-  let s = '';
-  if(MOTIF==='route'){
-    s += '<line class="rulerline" x1="8" y1="20" x2="292" y2="20" stroke-dasharray="5 5"/>';
-    for(let i=0;i<=5;i++){
-      const x = 8 + (284*i/5);
-      s += `<circle cx="${x}" cy="20" r="2.2" fill="none" stroke="#5c5343" stroke-width="1"/>`;
-    }
-    s += '<g id="finalmark"><circle cx="292" cy="20" r="4.4" fill="#a8402c"/></g>';
-    s += '<g id="mark" transform="translate(8,0)"><circle cx="0" cy="20" r="3.4" fill="#4d5157"/></g>';
-  } else {
-    s += '<line class="rulerline" x1="8" y1="20" x2="292" y2="20"/>';
-    for(let i=0;i<=10;i++){
-      const x = 8 + (284*i/10), big = (i===0||i===10);
-      s += `<line class="tick${big?'':' mm'}" x1="${x}" y1="${big?9:14}" x2="${x}" y2="20"/>`;
-    }
-    s += '<g id="finalmark"><line x1="292" y1="4" x2="292" y2="24"/></g>';
-    s += '<g id="mark" transform="translate(8,0)"><line x1="0" y1="6" x2="0" y2="24"/></g>';
+  let s='';
+  for(let g=0; g<5; g++){
+    const cx = 28 + g*61, w = 22, h = 15, x = cx - w/2, y = 5;
+    s += `<g class="card" data-g="${g}" style="transform-origin:${cx}px 12.5px">`
+      +  `<rect class="back" x="${x}" y="${y}" width="${w}" height="${h}" rx="2"/>`
+      +  `<line class="backline" x1="${x+4}" y1="${y+h-4}" x2="${x+w-4}" y2="${y+4}"/>`
+      +  `<rect class="face" x="${x}" y="${y}" width="${w}" height="${h}" rx="2"/>`
+      +  `<circle class="pip" cx="${cx}" cy="${y+h/2}" r="2.4"/>`
+      +  '</g>';
   }
   svg.innerHTML = s;
 })();
@@ -559,8 +562,19 @@ function update(dir){
   if(bp>0) bi.textContent = 'しおりのページへ（' + bp + '）';
   const last = pages.length-1;
   const prog = last>0 ? idx/last : 0;
-  document.getElementById('mark').setAttribute('transform','translate('+(8+284*prog)+',0)');
-  document.getElementById('finalmark').classList.toggle('show', idx===last);
+  (function(){
+    var open = Math.floor(prog*5 + 0.0001), lastp = (idx===last);
+    if(lastp) open = 5;
+    document.querySelectorAll('#rulerSvg .card').forEach(function(c,g){
+      var on = g < open, was = c.classList.contains('on');
+      if(on !== was){
+        c.classList.toggle('on', on);
+        c.classList.add('flip');
+        setTimeout(function(){ c.classList.remove('flip'); }, 460);
+      }
+      c.classList.toggle('fin', lastp);
+    });
+  })();
 
   let name='';
   for(let i=0;i<DATA.chapters.length;i++){ if(chapPage[i]!=null && chapPage[i]<=idx) name=DATA.chapters[i].title; }
