@@ -231,11 +231,15 @@
   .win.off{fill:none;stroke:#9a917c;}
   @media (prefers-reduced-motion: reduce){.win{transition:none;}}
 
+  #homeLink{font:inherit;font-size:inherit;letter-spacing:.14em;color:var(--ink-soft);text-decoration:none;white-space:nowrap;flex:0 0 auto;}
+  #homeLink:hover,#homeLink:focus-visible{color:var(--ink);}
+  #homeLink[hidden]{display:none;}
 </style>
 </head>
 <body class="vert">
 <div id="app">
   <div class="bar">
+    <a id="homeLink" href="index.html" hidden>一覧</a>
     <button id="tocBtn" aria-haspopup="dialog">目次</button>
     <div class="ruler" aria-hidden="true">
       <span class="rn"></span>
@@ -648,6 +652,7 @@ function buildToc(){
 
 /* ---------- sheets ---------- */
 function closeSheets(){ document.querySelectorAll('.sheet').forEach(s=>s.classList.remove('open')); }
+try{ if(!/claude\.ai$/i.test(location.hostname) && !/^blob:/.test(location.href)) document.getElementById('homeLink').hidden=false; }catch(e){}
 document.getElementById('bmBtn').onclick=toggleBm;
 document.getElementById('bmJump').onclick=goBm;
 document.getElementById('bmItem').onclick=goBm;

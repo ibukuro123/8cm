@@ -60,6 +60,7 @@
   .tile:hover img,.tile:focus-visible img,.tile[aria-expanded="true"] img{transform:translateY(-5px);}
   .tile .tt{display:block;margin-top:8px;font-size:12.5px;line-height:1.5;letter-spacing:.04em;}
   .tile .badge{display:block;margin-top:3px;font-size:11px;color:var(--shu);}
+  .siteshare{position:relative;margin:18px 0 0;}
   .resume{position:relative;margin-top:24px;padding:14px 15px;
     background:url("tex/paper.jpg") center/360px auto repeat;
     border:1px solid rgba(60,45,20,.28);
@@ -124,6 +125,7 @@
     <p class="lead">身長八センチメートルの、小さき者たちの物語です。発表順に五作、この場で最後まで読めます。表紙を選ぶと、あらすじが開きます。</p>
   </header>
   <section class="resume" id="resume" hidden></section>
+  <p class="siteshare"><button class="btn cart share" type="button" data-share="__site" aria-label="シリーズ全体のリンクを共有する"></button></p>
   <main id="list"></main>
   <div class="panel" id="panel" hidden></div><!-- 行の下に差しこむ -->
   <footer>© 2026 胃袋一二三</footer>
@@ -172,6 +174,10 @@
     tiles.forEach(function(t){ if(Math.abs(t.offsetTop-top)<4) lastInRow=t; });
     if(lastInRow.nextSibling!==panel) lastInRow.parentNode.insertBefore(panel, lastInRow.nextSibling);
   }
+  (function siteShare(){
+    var b=document.querySelector('.siteshare .share');
+    if(b) b.innerHTML=CART+'<span>シリーズを運ぶ</span>';
+  })();
   (function resume(){
     var box=document.getElementById('resume');
     var got=BOOKS.filter(function(b){ return bookmarked(b); });
@@ -205,9 +211,14 @@
     var btn=e.target.closest('.share');
     if(btn){
       btn.classList.add('spin'); setTimeout(function(){ btn.classList.remove('spin'); },750);
-      var b=null; BOOKS.forEach(function(x){ if(x.slug===btn.dataset.share) b=x; });
-      var url=location.href.replace(/index\.html.*$/,'').replace(/[?#].*$/,'')+b.slug+'.html';
-      var title='『'+b.t+'』胃袋一二三';
+      var base=location.href.replace(/index\.html.*$/,'').replace(/[?#].*$/,'');
+      var url, title;
+      if(btn.dataset.share==='__site'){
+        url=base; title='『8センチメートル』シリーズ　胃袋一二三';
+      } else {
+        var b=null; BOOKS.forEach(function(x){ if(x.slug===btn.dataset.share) b=x; });
+        url=base+b.slug+'.html'; title='『'+b.t+'』胃袋一二三';
+      }
       if(navigator.share){ navigator.share({title:title,text:title,url:url}).catch(function(){}); return; }
       if(navigator.clipboard){ navigator.clipboard.writeText(title+' '+url).then(function(){ say('リンクをコピーしました'); },function(){ prompt('リンク',url); }); }
       else prompt('リンク',url);
