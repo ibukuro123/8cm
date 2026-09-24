@@ -71,6 +71,28 @@
   .resume img{width:34px;height:auto;display:block;box-shadow:0 3px 8px rgba(25,18,8,.3);}
   .resume .rt{flex:1 1 auto;font-size:13.5px;letter-spacing:.04em;}
   .resume .btn{padding:6px 11px;font-size:12.5px;}
+  .tl{position:relative;margin-top:34px;padding:14px 14px 18px;
+    background:url("tex/paper.jpg") center/360px auto repeat;border:1px solid rgba(60,45,20,.28);
+    box-shadow:0 8px 18px rgba(40,28,10,.22), 0 1px 0 rgba(255,252,240,.55) inset;}
+  .tl h2{margin:0;font-size:12px;letter-spacing:.22em;color:var(--soft);font-weight:400;}
+  .tlnote{margin:6px 0 0;font-size:12px;color:var(--soft);line-height:1.7;}
+  .tlbar{position:relative;height:124px;margin-top:4px;}
+  .tlline{position:absolute;left:1%;right:1%;top:61px;height:1.5px;background:#6b6152;opacity:.7;}
+  .tlbreak{position:absolute;left:17%;top:49px;font-size:15px;color:var(--soft);}
+  .tlmark{position:absolute;top:0;bottom:0;width:0;background:none;border:none;padding:0;cursor:pointer;font:inherit;color:inherit;}
+  .tlmark .dot{position:absolute;top:56px;left:-6px;width:12px;height:12px;border-radius:50%;background:var(--shu);box-shadow:0 0 0 3px rgba(168,64,44,.18);}
+  .tlmark .lbl{position:absolute;left:0;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;white-space:nowrap;}
+  .tlmark.up .lbl{bottom:72px;}
+  .tlmark.down .lbl{top:76px;}
+  .tlmark.edgeL .lbl{transform:translateX(-14px);align-items:flex-start;}
+  .tlmark.edgeR .lbl{transform:translateX(calc(-100% + 14px));align-items:flex-end;}
+  .tlmark .tn{font-size:11.5px;letter-spacing:.02em;}
+  .tlmark .tw{margin-top:1px;font-size:10px;color:var(--soft);}
+  .tlmark:focus-visible{outline:none;}
+  .tlmark:focus-visible .dot{outline:2px solid var(--shu);outline-offset:3px;}
+  .tlmark.new .dot{animation:tlpop .9s ease-out;}
+  @keyframes tlpop{0%{transform:scale(0);}60%{transform:scale(1.5);}100%{transform:scale(1);}}
+  @media (prefers-reduced-motion:reduce){.tlmark.new .dot{animation:none;}}
   .panel{position:relative;grid-column:1/-1;margin-top:4px;padding:17px 17px 15px;color:var(--ink);
     background:url("tex/paper.jpg") center/420px auto repeat;
     border:1px solid rgba(60,45,20,.3);
@@ -134,6 +156,11 @@
   <p class="siteshare"><button class="btn cart share" type="button" data-share="__site" aria-label="シリーズ全体のリンクを共有する"></button></p>
   <main id="list"></main>
   <div class="panel" id="panel" hidden></div><!-- 行の下に差しこむ -->
+  <section class="tl" id="tl" aria-label="物語の年表">
+    <h2>物語の年表</h2>
+    <p class="tlnote" id="tlnote"></p>
+    <div class="tlbar" id="tlbar"><div class="tlline"></div><div class="tlbreak" aria-hidden="true">〜</div></div>
+  </section>
   <footer>© 2026 胃袋一二三</footer>
 </div>
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
@@ -183,6 +210,37 @@
   (function siteShare(){
     var b=document.querySelector('.siteshare .share');
     if(b) b.innerHTML=CART+'<span>まとめて運ぶ</span>';
+  })();
+  (function timeline(){
+    var TL = {
+      rei:   {pos:5,  name:'零と一',     when:'約六十三年前', side:'down', edge:'L'},
+      lario: {pos:30, name:'ラリオ前史', when:'約十二年前',   side:'up'},
+      '8cm': {pos:55, name:'8センチ',    when:'はじまり',     side:'down'},
+      hanpo: {pos:68, name:'半歩',       when:'その冬',       side:'up'},
+      '9cm': {pos:81, name:'9センチ',    when:'四百十二日後', side:'down'},
+      '1cm': {pos:95, name:'1センチ',    when:'二年後',       side:'up', edge:'R'}
+    };
+    var bar=document.getElementById('tlbar'), note=document.getElementById('tlnote');
+    var seen={}; try{ seen=JSON.parse(localStorage.getItem('8cm:tlseen')||'{}')||{}; }catch(e){}
+    var done=0;
+    BOOKS.forEach(function(b){
+      var t=TL[b.slug]; if(!t) return;
+      var fin=false; try{ fin=!!localStorage.getItem('done:'+b.t); }catch(e){}
+      if(!fin) return;
+      done++;
+      var m=document.createElement('button');
+      m.type='button'; m.className='tlmark '+t.side+(t.edge?' edge'+t.edge:'')+(seen[b.slug]?'':' new');
+      m.style.left=t.pos+'%'; m.dataset.slug=b.slug;
+      m.setAttribute('aria-label',b.t+'（'+t.when+'）');
+      m.innerHTML='<span class="dot"></span><span class="lbl"><span class="tn">'+esc(t.name||b.t)+'</span><span class="tw">'+esc(t.when)+'</span></span>';
+      m.onclick=function(){ open(b.slug,true); };
+      bar.appendChild(m); seen[b.slug]=1;
+    });
+    try{ localStorage.setItem('8cm:tlseen',JSON.stringify(seen)); }catch(e){}
+    note.textContent = done===0
+      ? '読み終えた作品から、ここに印がつきます。物語の中で、いつの話だったのかが分かります。'
+      : (done<BOOKS.length ? '読み終えた作品：'+done+' / '+BOOKS.length+'。残りは、読み終えると現れます。'
+                           : 'すべての作品が、年表にそろいました。');
   })();
   (function resume(){
     var box=document.getElementById('resume');

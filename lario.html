@@ -569,6 +569,7 @@ function update(dir){
   bi.hidden = !(bm && bp>0);
   if(bp>0) bi.textContent = 'しおりのページへ（' + bp + '）';
   const last = pages.length-1;
+  try{ if(idx===last && last>0) localStorage.setItem('done:'+DATA.title,'1'); }catch(e){}
   const prog = last>0 ? idx/last : 0;
   document.getElementById('mark').setAttribute('transform','translate('+(8+284*prog)+',0)');
   document.getElementById('finalmark').classList.toggle('show', idx===last);
