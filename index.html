@@ -79,16 +79,16 @@
     box-shadow:0 8px 18px rgba(40,28,10,.22), 0 1px 0 rgba(255,252,240,.55) inset;}
   .tl h2{margin:0;font-size:12px;letter-spacing:.22em;color:var(--soft);font-weight:400;}
   .tlnote{margin:6px 0 0;font-size:12px;color:var(--soft);line-height:1.7;}
-  .tlbar{margin-top:14px;overflow-x:auto;-webkit-overflow-scrolling:touch;direction:rtl;}
-  .nenpu{writing-mode:vertical-rl;direction:ltr;display:flex;flex-direction:column;height:230px;width:max-content;margin:0 auto;padding:6px 0;}
-  .tlmark{display:block;background:none;border:none;margin:0;cursor:pointer;font:inherit;color:inherit;text-align:start;
-    padding-block:0 10px;padding-inline:4px 0;border-block-start:1px solid rgba(90,80,60,.24);}
-  .tlmark + .tlmark{padding-block-start:10px;}
-  .tlmark:first-child{border-block-start:none;}
-  .tlmark.gap{margin-block-start:16px;}
-  .tlmark .when{display:block;font-size:10.5px;letter-spacing:.2em;color:var(--soft);line-height:1.9;}
-  .tlmark .tn{display:block;font-size:14.5px;letter-spacing:.18em;line-height:1.7;margin-block-start:2px;}
-  .tlmark .seal{display:inline-block;margin-inline-start:.8em;font-size:10px;letter-spacing:.15em;color:var(--shu);
+  .tlbar{margin-top:14px;}
+  .nenpu{display:flex;flex-direction:row;justify-content:center;align-items:stretch;height:262px;padding:4px 0;}
+  .tlmark{writing-mode:vertical-rl;display:block;background:none;border:none;margin:0;cursor:pointer;font:inherit;color:inherit;
+    text-align:start;padding:2px 10px;border-left:1px solid rgba(90,80,60,.24);white-space:nowrap;height:100%;overflow:hidden;}
+  .tlmark:first-child{border-left:none;}
+  .tlmark.gap{margin-left:10px;}
+  .tlmark .when{display:inline;font-size:10.5px;letter-spacing:.14em;color:var(--soft);}
+  .tlmark .when::after{content:"";display:inline-block;block-size:0;inline-size:.9em;}
+  .tlmark .tn{display:inline;font-size:14.5px;letter-spacing:.16em;}
+  .tlmark .seal{display:inline-block;margin-inline-start:.7em;font-size:10px;letter-spacing:.15em;color:var(--shu);
     border:1px solid rgba(168,64,44,.6);padding:3px 1px;line-height:1.1;}
   .tlmark.todo .tn{color:#a39a88;}
   .tlmark.todo .when{color:#b3ab99;}
@@ -248,7 +248,7 @@
     });
     try{ localStorage.setItem('8cm:tlseen',JSON.stringify(seen)); }catch(e){}
     note.textContent = done===0
-      ? '右が昔、左へいくほど新しい時代です。読み終えた作品から、題名が濃くなります。'
+      ? '左が昔、右へいくほど新しい時代です。読み終えた作品から、題名が濃くなります。'
       : (done<BOOKS.length ? '読み終えた作品：'+done+' / '+BOOKS.length+'。'
                            : 'すべての作品を読み終えました。');
   })();
