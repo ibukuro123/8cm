@@ -60,6 +60,9 @@
   .tile:hover img,.tile:focus-visible img,.tile[aria-expanded="true"] img{transform:translateY(-5px);}
   .tile .tt{display:block;margin-top:8px;font-size:12.5px;line-height:1.5;letter-spacing:.04em;}
   .tile .badge{display:block;margin-top:3px;font-size:11px;color:var(--shu);}
+  .tile .badge.next{font-weight:700;letter-spacing:.12em;}
+  .tile .badge.done{color:var(--soft);letter-spacing:.1em;}
+  .tile.is-next img{outline:2px solid rgba(168,64,44,.55);outline-offset:3px;}
   .siteshare{position:relative;margin:18px 0 0;}
   .resume{position:relative;margin-top:24px;padding:14px 15px;
     background:url("tex/paper.jpg") center/360px auto repeat;
@@ -76,23 +79,29 @@
     box-shadow:0 8px 18px rgba(40,28,10,.22), 0 1px 0 rgba(255,252,240,.55) inset;}
   .tl h2{margin:0;font-size:12px;letter-spacing:.22em;color:var(--soft);font-weight:400;}
   .tlnote{margin:6px 0 0;font-size:12px;color:var(--soft);line-height:1.7;}
-  .tlbar{position:relative;height:124px;margin-top:4px;}
-  .tlline{position:absolute;left:1%;right:1%;top:61px;height:1.5px;background:#6b6152;opacity:.7;}
-  .tlbreak{position:absolute;left:17%;top:49px;font-size:15px;color:var(--soft);}
-  .tlmark{position:absolute;top:0;bottom:0;width:0;background:none;border:none;padding:0;cursor:pointer;font:inherit;color:inherit;}
-  .tlmark .dot{position:absolute;top:56px;left:-6px;width:12px;height:12px;border-radius:50%;background:var(--shu);box-shadow:0 0 0 3px rgba(168,64,44,.18);}
-  .tlmark .lbl{position:absolute;left:0;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;white-space:nowrap;}
-  .tlmark.up .lbl{bottom:72px;}
-  .tlmark.down .lbl{top:76px;}
-  .tlmark.edgeL .lbl{transform:translateX(-14px);align-items:flex-start;}
-  .tlmark.edgeR .lbl{transform:translateX(calc(-100% + 14px));align-items:flex-end;}
-  .tlmark .tn{font-size:11.5px;letter-spacing:.02em;}
-  .tlmark .tw{margin-top:1px;font-size:10px;color:var(--soft);}
+  .tlbar{position:relative;height:360px;margin-top:10px;}
+  .pillar{position:absolute;left:calc(50% - 21px);top:0;bottom:0;width:42px;border-radius:2px;
+    background:linear-gradient(90deg,#bfae88,#d9c9a6 38%,#cdbc97 70%,#b9a882);
+    box-shadow:inset -7px 0 10px -7px rgba(60,40,15,.45), inset 5px 0 7px -5px rgba(255,250,235,.5), 0 6px 14px rgba(40,28,10,.22);}
+  .pillar::before{content:"";position:absolute;inset:0;border-radius:2px;
+    background:repeating-linear-gradient(90deg, rgba(110,80,40,.10) 0 1px, transparent 1px 6px);}
+  .tlbreak{position:absolute;left:calc(50% - 30px);width:60px;top:78%;height:10px;
+    background:linear-gradient(170deg, transparent 38%, #f3eee2 38% 50%, transparent 50%),
+               linear-gradient(170deg, transparent 58%, #f3eee2 58% 70%, transparent 70%);}
+  .tlmark{position:absolute;left:0;right:0;height:0;background:none;border:none;padding:0;cursor:pointer;font:inherit;color:inherit;}
+  .tlmark .cut{position:absolute;left:calc(50% - 25px);width:50px;top:-2px;height:3.4px;border-radius:2px;
+    background:#4d5157;box-shadow:0 1.5px 0 rgba(255,252,238,.55);}
+  .tlmark.nine .cut{background:var(--shu);}
+  .tlmark.todo .cut{background:#8f846f;opacity:.35;box-shadow:none;}
+  .tlmark .when{position:absolute;right:calc(50% + 32px);top:-8px;font-size:11px;color:var(--soft);white-space:nowrap;letter-spacing:.04em;}
+  .tlmark .tn{position:absolute;left:calc(50% + 32px);top:-10px;font-size:13.5px;white-space:nowrap;letter-spacing:.04em;}
+  .tlmark.todo .tn{color:#8a8171;}
+  .tlmark.todo .when{opacity:.7;}
   .tlmark:focus-visible{outline:none;}
-  .tlmark:focus-visible .dot{outline:2px solid var(--shu);outline-offset:3px;}
-  .tlmark.new .dot{animation:tlpop .9s ease-out;}
-  @keyframes tlpop{0%{transform:scale(0);}60%{transform:scale(1.5);}100%{transform:scale(1);}}
-  @media (prefers-reduced-motion:reduce){.tlmark.new .dot{animation:none;}}
+  .tlmark:focus-visible .cut{outline:2px solid var(--shu);outline-offset:3px;}
+  .tlmark.new .cut{animation:tlcut .9s ease-out;transform-origin:left center;}
+  @keyframes tlcut{0%{transform:scaleX(0);}100%{transform:scaleX(1);}}
+  @media (prefers-reduced-motion:reduce){.tlmark.new .cut{animation:none;}}
   .panel{position:relative;grid-column:1/-1;margin-top:4px;padding:17px 17px 15px;color:var(--ink);
     background:url("tex/paper.jpg") center/420px auto repeat;
     border:1px solid rgba(60,45,20,.3);
@@ -150,7 +159,7 @@
     <header>
     <h1 id="ttl">『8センチメートル』シリーズ</h1>
     <div class="by">胃袋一二三</div>
-    <p class="lead">身長八センチメートルの、小さき者たちの物語です。発表順に六作、この場で最後まで読めます。表紙を選ぶと、あらすじが開きます。</p>
+    <p class="lead">身長八センチメートルの、小さき者たちの物語です。六作とも、この場で最後まで読めます。発表順に、左上から読むのがおすすめです。表紙を選ぶと、あらすじが開きます。</p>
   </header>
   <section class="resume" id="resume" hidden></section>
   <p class="siteshare"><button class="btn cart share" type="button" data-share="__site" aria-label="シリーズ全体のリンクを共有する"></button></p>
@@ -159,7 +168,7 @@
   <section class="tl" id="tl" aria-label="物語の年表">
     <h2>物語の年表</h2>
     <p class="tlnote" id="tlnote"></p>
-    <div class="tlbar" id="tlbar"><div class="tlline"></div><div class="tlbreak" aria-hidden="true">〜</div></div>
+    <div class="tlbar" id="tlbar"><div class="pillar" aria-hidden="true"></div><div class="tlbreak" aria-hidden="true"></div></div>
   </section>
   <footer>© 2026 胃袋一二三</footer>
 </div>
@@ -175,11 +184,18 @@
     el.style.fontSize=fs+'px';
     while(fs>13 && el.scrollWidth>max){ fs-=0.5; el.style.fontSize=fs+'px'; }
   }
+  function isDone(b){ try{ return !!localStorage.getItem('done:'+b.t); }catch(e){ return false; } }
+  var nextIdx=-1;
+  for(var k=0;k<BOOKS.length;k++){ if(!isDone(BOOKS[k])){ nextIdx=k; break; } }
   list.innerHTML=BOOKS.map(function(b,i){
-    return '<button class="tile" type="button" data-slug="'+b.slug+'" aria-expanded="false">'
+    var badge='';
+    if(i===nextIdx) badge='<span class="badge next">'+(i===0?'ここから':'つぎ')+'</span>';
+    else if(isDone(b)) badge='<span class="badge done">読了</span>';
+    else if(bookmarked(b)) badge='<span class="badge">しおり</span>';
+    return '<button class="tile'+(i===nextIdx?' is-next':'')+'" type="button" data-slug="'+b.slug+'" aria-expanded="false">'
       + '<img src="covers/'+b.slug+'.jpg" alt="'+esc(b.t)+'　表紙" width="600" height="960" loading="lazy">'
       + '<span class="tt">'+esc(b.t)+'</span>'
-      + (i===0 ? '<span class="badge">ここから</span>' : (bookmarked(b)?'<span class="badge">しおり</span>':''))
+      + badge
       + '</button>';
   }).join('');
   function runDeliver(){
@@ -213,12 +229,12 @@
   })();
   (function timeline(){
     var TL = {
-      rei:   {pos:5,  name:'零と一',     when:'約六十三年前', side:'down', edge:'L'},
-      lario: {pos:30, name:'ラリオ前史', when:'約十二年前',   side:'up'},
-      '8cm': {pos:55, name:'8センチ',    when:'はじまり',     side:'down'},
-      hanpo: {pos:68, name:'半歩',       when:'その冬',       side:'up'},
-      '9cm': {pos:81, name:'9センチ',    when:'四百十二日後', side:'down'},
-      '1cm': {pos:95, name:'1センチ',    when:'二年後',       side:'up', edge:'R'}
+      rei:   {pos:6,  when:'約六十三年前'},
+      lario: {pos:34, when:'約十二年前'},
+      '8cm': {pos:58, when:'はじまり'},
+      hanpo: {pos:70, when:'その冬'},
+      '9cm': {pos:82, when:'四百十二日後', nine:true},
+      '1cm': {pos:94, when:'二年後'}
     };
     var bar=document.getElementById('tlbar'), note=document.getElementById('tlnote');
     var seen={}; try{ seen=JSON.parse(localStorage.getItem('8cm:tlseen')||'{}')||{}; }catch(e){}
@@ -226,21 +242,20 @@
     BOOKS.forEach(function(b){
       var t=TL[b.slug]; if(!t) return;
       var fin=false; try{ fin=!!localStorage.getItem('done:'+b.t); }catch(e){}
-      if(!fin) return;
-      done++;
+      if(fin) done++;
       var m=document.createElement('button');
-      m.type='button'; m.className='tlmark '+t.side+(t.edge?' edge'+t.edge:'')+(seen[b.slug]?'':' new');
-      m.style.left=t.pos+'%'; m.dataset.slug=b.slug;
-      m.setAttribute('aria-label',b.t+'（'+t.when+'）');
-      m.innerHTML='<span class="dot"></span><span class="lbl"><span class="tn">'+esc(t.name||b.t)+'</span><span class="tw">'+esc(t.when)+'</span></span>';
+      m.type='button'; m.className='tlmark'+(t.nine?' nine':'')+(fin?' fin':' todo')+(fin&&!seen[b.slug]?' new':'');
+      m.style.top=(100-t.pos)+'%'; m.dataset.slug=b.slug;
+      m.setAttribute('aria-label',b.t+'（'+t.when+'）'+(fin?'　読了':''));
+      m.innerHTML='<span class="when">'+esc(t.when)+'</span><span class="cut"></span><span class="tn">'+esc(b.t)+'</span>';
       m.onclick=function(){ open(b.slug,true); };
-      bar.appendChild(m); seen[b.slug]=1;
+      bar.appendChild(m); if(fin) seen[b.slug]=1;
     });
     try{ localStorage.setItem('8cm:tlseen',JSON.stringify(seen)); }catch(e){}
     note.textContent = done===0
-      ? '読み終えた作品から、ここに印がつきます。物語の中で、いつの話だったのかが分かります。'
-      : (done<BOOKS.length ? '読み終えた作品：'+done+' / '+BOOKS.length+'。残りは、読み終えると現れます。'
-                           : 'すべての作品が、年表にそろいました。');
+      ? '下が昔、上が新しい時代です。読み終えた作品から、柱に線が刻まれます。'
+      : (done<BOOKS.length ? '読み終えた作品：'+done+' / '+BOOKS.length+'。'
+                           : 'すべての作品を読み終えました。');
   })();
   (function resume(){
     var box=document.getElementById('resume');
