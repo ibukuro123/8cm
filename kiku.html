@@ -250,6 +250,13 @@
   .nextnav a{display:inline-block;margin-top:.4em;padding:.35em 1.1em;border:1px solid rgba(168,64,44,.55);color:var(--shu);
     text-decoration:none;letter-spacing:.12em;font-size:.95em;}
   .nextnav a + a{margin-left:.8em;}
+  .page .opener.cov{overflow:hidden;}
+  .page .opener.cov .covbg{position:absolute;left:-12px;right:-12px;height:52%;background-repeat:no-repeat;background-size:100% 4000%;filter:blur(6px);}
+  .page .opener.cov .covbg.t{top:-12px;background-position:center top;}
+  .page .opener.cov .covbg.b{bottom:-12px;background-position:center bottom;}
+  .page .opener.cov img{position:relative;
+    -webkit-mask-image:linear-gradient(180deg,transparent 0,#000 4%,#000 96%,transparent 100%);
+            mask-image:linear-gradient(180deg,transparent 0,#000 4%,#000 96%,transparent 100%);}
 </style>
 <link rel="manifest" href="manifest.webmanifest">
 <meta name="theme-color" content="#cbc3ad">
@@ -557,7 +564,7 @@ function renderPage(hostPage, page){
   hostPage.classList.remove('blank');
   if(!page){ hostPage.classList.add('blank'); return; }
   if(page[0] && page[0].t==='cover'){
-    host.innerHTML = '<div class="opener" style="background:#5e5d66"><img alt="'+DATA.title+'　'+DATA.sub+'" src="'+COVER+'"></div>';
+    host.innerHTML = '<div class="opener cov" style="background:#5e5d66"><div class="covbg t" style="background-image:url('+COVER+')"></div><div class="covbg b" style="background-image:url('+COVER+')"></div><img alt="'+DATA.title+'　'+DATA.sub+'" src="'+COVER+'"></div>';
     return;
   }
   if(page[0] && page[0].t==='blank'){ hostPage.classList.add('blank'); return; }
