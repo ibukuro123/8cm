@@ -241,6 +241,12 @@
   .page .opener.cov img{position:relative;
     -webkit-mask-image:linear-gradient(180deg,transparent 0,#000 4%,#000 96%,transparent 100%);
             mask-image:linear-gradient(180deg,transparent 0,#000 4%,#000 96%,transparent 100%);}
+  .page .opener.cov.lr .covbg{top:-12px;bottom:-12px;height:auto;width:52%;background-size:4000% 100%;}
+  .page .opener.cov.lr .covbg.t{left:-12px;right:auto;background-position:left center;}
+  .page .opener.cov.lr .covbg.b{right:-12px;left:auto;bottom:-12px;background-position:right center;}
+  .page .opener.cov.lr img{
+    -webkit-mask-image:linear-gradient(90deg,transparent 0,#000 3%,#000 97%,transparent 100%);
+            mask-image:linear-gradient(90deg,transparent 0,#000 3%,#000 97%,transparent 100%);}
 </style>
 <link rel="manifest" href="manifest.webmanifest">
 <meta name="theme-color" content="#cbc3ad">
@@ -549,6 +555,7 @@ function renderPage(hostPage, page){
   if(!page){ hostPage.classList.add('blank'); return; }
   if(page[0] && page[0].t==='cover'){
     host.innerHTML = '<div class="opener cov" style="background:#eceeec"><div class="covbg t" style="background-image:url('+COVER+')"></div><div class="covbg b" style="background-image:url('+COVER+')"></div><img alt="'+DATA.title+'　'+DATA.sub+'" src="'+COVER+'"></div>';
+    setTimeout(fitCov,0);
     return;
   }
   if(page[0] && page[0].t==='blank'){ hostPage.classList.add('blank'); return; }
@@ -709,6 +716,21 @@ window.addEventListener('resize',()=>{ clearTimeout(rt); const keep=currentBlock
 if(document.fonts && document.fonts.ready){ document.fonts.ready.then(()=>layout(null)); }
 layout(null);
 
+/* 表紙の余白を、表紙の端の色でつなぐ（上下か左右かを画面の形で判定） */
+function fitCov(){
+  document.querySelectorAll('.opener.cov').forEach(function(op){
+    var im=op.querySelector('img'); if(!im) return;
+    var set=function(){
+      var W=op.clientWidth, H=op.clientHeight; if(!W||!H) return;
+      var r=(im.naturalWidth||600)/(im.naturalHeight||960);
+      var lr = (W/H) > r;
+      op.classList.toggle('lr', lr);
+    };
+    if(im.complete) set(); else im.addEventListener('load', set, {once:true});
+  });
+}
+window.addEventListener('resize', function(){ setTimeout(fitCov, 250); });
+
 /* shioriAuto: トップページからの「しおりの続きから」 */
 if(/[?&]shiori=1/.test(location.search)){
   var _try=function(n){
@@ -720,6 +742,6 @@ if(/[?&]shiori=1/.test(location.search)){
   setTimeout(function(){ _try(6); }, 300);
 }
 </script>
-<script>if('serviceWorker' in navigator){window.addEventListener('load',function(){navigator.serviceWorker.register('sw.js').catch(function(){});});}</script>
+<script>if('serviceWorker' in navigator){window.addEventListener('load',function(){navigator.serviceWorker.register('sw.js',{updateViaCache:'none'}).catch(function(){});});}</script>
 </body>
 </html>

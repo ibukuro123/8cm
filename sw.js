@@ -1,5 +1,5 @@
 /* 『8センチメートル』シリーズ  オフライン用 */
-const CACHE = '8cm-v5';
+const CACHE = '8cm-v6';
 const ASSETS = [
   './', './index.html',
   './8cm.html', './lario.html', './9cm.html', './hanpo.html', './1cm.html', './kiku.html',
@@ -19,7 +19,7 @@ self.addEventListener('fetch', e => {
   if (req.method !== 'GET') return;
   if (req.mode === 'navigate' || (req.headers.get('accept') || '').includes('text/html')) {
     e.respondWith(
-      fetch(req).then(res => { const cp = res.clone(); caches.open(CACHE).then(c => c.put(req, cp)); return res; })
+      fetch(req, {cache: 'no-store'}).then(res => { const cp = res.clone(); caches.open(CACHE).then(c => c.put(req, cp)); return res; })
                 .catch(() => caches.match(req).then(r => r || caches.match('./index.html')))
     );
     return;
