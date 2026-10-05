@@ -1,12 +1,12 @@
 /* 『8センチメートル』シリーズ  オフライン用 */
-const CACHE = '8cm-v19';
+const CACHE = '8cm-v20';
 const ASSETS = [
   './', './index.html',
-  './8cm.html', './lario.html', './9cm.html', './hanpo.html', './1cm.html', './kiku.html', './minami.html',
+  './8cm.html', './lario.html', './9cm.html', './hanpo.html', './1cm.html', './kiku.html', './minami.html', './hitoshizuku.html',
   './manifest.webmanifest',
   './icons/icon-192.png', './icons/icon-512.png', './icons/icon-maskable-512.png',
   './tex/paper.jpg',
-  './covers/8cm.jpg', './covers/lario.jpg', './covers/9cm.jpg', './covers/hanpo.jpg', './covers/1cm.jpg', './covers/kiku.jpg', './covers/minami.jpg'
+  './covers/8cm.jpg', './covers/lario.jpg', './covers/9cm.jpg', './covers/hanpo.jpg', './covers/1cm.jpg', './covers/kiku.jpg', './covers/minami.jpg', './covers/hitoshizuku.jpg'
 ];
 self.addEventListener('install', e => {
   e.waitUntil(caches.open(CACHE).then(c => c.addAll(ASSETS)).then(() => self.skipWaiting()));
