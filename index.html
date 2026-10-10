@@ -154,15 +154,21 @@
     background:#f3eee0 url("tex/paper.jpg") center/cover no-repeat;color:#2b2722;
     box-shadow:0 18px 40px -12px rgba(0,0,0,.6), 0 0 0 1px rgba(60,45,20,.25);padding:28px 22px 12px;
     font-family:"Hiragino Mincho ProN","Yu Mincho",YuMincho,"Noto Serif JP",serif;touch-action:pan-y;user-select:none;-webkit-user-select:none;}
-  .hlpages{position:relative;flex:1 1 auto;min-height:0;}
+  .hlpages{position:relative;flex:1 1 auto;min-height:0;min-width:0;}
   .hlpage{position:absolute;inset:0;display:none;justify-content:center;align-items:stretch;}
   .hlpage.on{display:flex;animation:hlflip .35s ease-out;}
+  .hlpage.p-sig{justify-content:flex-start;padding-left:14%;}
   @keyframes hlflip{from{opacity:.1;transform:translateX(var(--hldx,-12px));}to{opacity:1;transform:none;}}
-  .hlv{writing-mode:vertical-rl;-webkit-writing-mode:vertical-rl;text-orientation:mixed;height:100%;
-    font-size:17px;line-height:1.95;letter-spacing:.05em;color:#3f382c;}
+  /* 列は言葉の切れ目で分けて、列の中では折り返さない。台詞の列は天から五分の一下げてそろえ、名前は一列あけて地付き */
+  .hlv{writing-mode:vertical-rl;-webkit-writing-mode:vertical-rl;text-orientation:mixed;height:100%;width:max-content;
+    font-size:var(--hlfs,18.5px);line-height:1.9;letter-spacing:.05em;color:#3f382c;}
   .hlv p{margin:0;}
-  .hlv .who{text-align:end;white-space:nowrap;margin-right:.5em;}
-  .hlv .sig{text-align:end;}
+  .hlv .col{white-space:nowrap;}
+  .hlv .say{display:block;padding-top:20%;}
+  .hlv .say .col{display:block;}
+  .hlv .who{text-align:end;margin-right:1.9em;padding-bottom:4%;}
+  .p-to .col{text-align:center;}
+  .p-sig .col{text-align:end;padding-bottom:4%;}
   .hlv .tcy{text-combine-upright:all;-webkit-text-combine:horizontal;}
   .hlzone{position:absolute;top:0;bottom:56px;width:32%;border:none;background:none;padding:0;cursor:pointer;z-index:1;}
   .hlzone.l{left:0;} .hlzone.r{right:0;}
@@ -174,10 +180,11 @@
   .hlnum{font-size:13px;letter-spacing:.12em;color:#6d6557;min-width:3.4em;text-align:center;}
   .hlclose{font:inherit;font-size:14px;letter-spacing:.2em;padding:6px 16px;border:1px solid rgba(60,45,20,.35);background:rgba(255,255,255,.45);color:#2b2722;cursor:pointer;}
   @media (max-height:460px){
-    .hlpaper{padding:16px 22px 8px;height:86vh;}
-    .hlv{font-size:15px;line-height:1.8;}
-    .hlfoot{margin-top:4px;min-height:38px;}
-    .hlzone{bottom:44px;}
+    .hlpaper{flex-direction:row;padding:12px 14px;height:92vh;width:min(92vw,720px);}
+    .hlfoot{flex-direction:column-reverse;justify-content:space-between;margin:0 10px 0 0;min-height:0;order:-1;}
+    .hldots{flex-direction:column;}
+    .hlzone{bottom:0;}
+    .hlzone.l{left:84px;}
   }
   @media (prefers-reduced-motion:reduce){.hlpage.on{animation:none;}}
 </style>
@@ -209,14 +216,14 @@
 <div class="hlwrap" id="hlwrap" hidden>
   <div class="hlpaper" id="hlpaper" role="dialog" aria-modal="true" aria-label="本棚にはさまった手紙">
     <div class="hlpages" id="hlpages" aria-live="polite">
-      <section class="hlpage"><div class="hlv"><p>この本を読んでくれた、あなたへ。</p></div></section>
-      <section class="hlpage"><div class="hlv"><p class="say">どうせ、最後まで読むと思ってた。……ありがとな</p><p class="who">ヒロ</p></div></section>
-      <section class="hlpage"><div class="hlv"><p class="say">配達ってさ、届くまでが仕事なんだよ。……届いた<span class="tcy">?</span>&nbsp;ありがと</p><p class="who">ラリオ</p></div></section>
-      <section class="hlpage"><div class="hlv"><p class="say">……五十一回目。あんたの勝ちだ。……ありがとよ</p><p class="who">ナオ吉</p></div></section>
-      <section class="hlpage"><div class="hlv"><p class="say">聞いてるか。……聞いておったな。礼を言うぞ</p><p class="who">カク爺</p></div></section>
-      <section class="hlpage"><div class="hlv"><p class="say">長い道だったろう。座っていきな。……ありがとね</p><p class="who">ネネ</p></div></section>
-      <section class="hlpage"><div class="hlv"><p class="say">ここまで、来てくれたんだな。ありがとう。……いつか、そっちにも行く</p><p class="who">よしゆき</p></div></section>
-      <section class="hlpage"><div class="hlv"><p class="sig">うろこ堂の、本棚のうしろより</p></div></section>
+      <section class="hlpage p-to"><div class="hlv"><p class="col">この本を読んでくれた、あなたへ。</p></div></section>
+      <section class="hlpage"><div class="hlv"><div class="say"><p class="col">どうせ、最後まで読むと思ってた。</p><p class="col">……ありがとな</p></div><p class="col who">ヒロ</p></div></section>
+      <section class="hlpage"><div class="hlv"><div class="say"><p class="col">配達ってさ、届くまでが仕事なんだよ。</p><p class="col">……届いた<span class="tcy">?</span></p><p class="col">ありがと</p></div><p class="col who">ラリオ</p></div></section>
+      <section class="hlpage"><div class="hlv"><div class="say"><p class="col">……五十一回目。</p><p class="col">あんたの勝ちだ。</p><p class="col">……ありがとよ</p></div><p class="col who">ナオ吉</p></div></section>
+      <section class="hlpage"><div class="hlv"><div class="say"><p class="col">聞いてるか。</p><p class="col">……聞いておったな。</p><p class="col">礼を言うぞ</p></div><p class="col who">カク爺</p></div></section>
+      <section class="hlpage"><div class="hlv"><div class="say"><p class="col">長い道だったろう。座っていきな。</p><p class="col">……ありがとね</p></div><p class="col who">ネネ</p></div></section>
+      <section class="hlpage"><div class="hlv"><div class="say"><p class="col">ここまで、来てくれたんだな。</p><p class="col">ありがとう。</p><p class="col">……いつか、そっちにも行く</p></div><p class="col who">よしゆき</p></div></section>
+      <section class="hlpage p-sig"><div class="hlv"><p class="col">うろこ堂の、本棚のうしろより</p></div></section>
     </div>
     <button class="hlzone l" type="button" id="hlnext" aria-label="次のページ"></button>
     <button class="hlzone r" type="button" id="hlprev" aria-label="前のページ"></button>
@@ -327,7 +334,16 @@
       if(e.key==='ArrowLeft'||e.key==='ArrowDown'||e.key==='PageDown'){ e.preventDefault(); nextP(); }
       else if(e.key==='ArrowRight'||e.key==='ArrowUp'||e.key==='PageUp'){ e.preventDefault(); prevP(); }
     });
-    function openL(){ wrap.hidden=false; show(0,1); closeBtn.focus({preventScroll:true}); }
+    /* いちばん長い列が、天から五分の一下げたうえで紙の中に収まる字の大きさ（上限19px）。列は分けない */
+    var pagesEl=document.getElementById('hlpages');
+    var maxN=Math.max.apply(null,[].map.call(pagesEl.querySelectorAll('.say .col'),function(x){ return Array.from(x.textContent).length; }));
+    function fit(){
+      var H=pagesEl.clientHeight; if(!H) return;
+      var fs=Math.min(19, Math.floor(((H*0.8)/(maxN*1.05))*10)/10-0.2);
+      paper.style.setProperty('--hlfs', Math.max(9,fs)+'px');
+    }
+    window.addEventListener('resize',function(){ if(!wrap.hidden) fit(); });
+    function openL(){ wrap.hidden=false; fit(); show(0,1); closeBtn.focus({preventScroll:true}); }
     function closeL(){ wrap.hidden=true; c.focus(); }
     c.addEventListener('click',function(e){ e.stopPropagation(); openL(); });
     closeBtn.addEventListener('click',closeL);
