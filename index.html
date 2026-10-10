@@ -148,18 +148,31 @@
   .hidletter:hover svg,.hidletter:focus-visible svg{transform:translateY(-2px);}
   .hidletter:focus-visible{outline:2px solid rgba(168,64,44,.6);outline-offset:3px;}
   @media (prefers-reduced-motion:reduce){.hidletter{transition:none;}}
-  .hlwrap{position:fixed;inset:0;z-index:50;display:flex;align-items:center;justify-content:center;background:rgba(30,22,10,.45);padding:16px;}
+  .hlwrap{position:fixed;inset:0;z-index:50;display:flex;align-items:center;justify-content:center;background:rgba(30,22,10,.45);padding:0;}
   .hlwrap[hidden]{display:none;}
-  .hlpaper{position:relative;max-width:calc(100vw - 32px);max-height:calc(100vh - 32px);overflow:auto;
+  .hlpaper{position:relative;box-sizing:border-box;width:min(90vw,660px);height:min(80vh,34em);display:flex;flex-direction:column;
     background:#f3eee0 url("tex/paper.jpg") center/360px auto repeat;color:#2b2722;
-    box-shadow:0 18px 40px -12px rgba(0,0,0,.6), 0 0 0 1px rgba(60,45,20,.25);padding:30px 30px 24px;
+    box-shadow:0 18px 40px -12px rgba(0,0,0,.6), 0 0 0 1px rgba(60,45,20,.25);padding:26px 22px 16px;
     font-family:"Hiragino Mincho ProN","Yu Mincho",YuMincho,"Noto Serif JP",serif;}
-  .hltext{writing-mode:vertical-rl;text-orientation:mixed;height:min(26em,calc(100vh - 140px));font-size:16px;line-height:2.1;letter-spacing:.06em;color:#4b4335;
-    border-top:2px solid rgba(120,100,60,.4);padding-top:1em;margin:0 auto;}
+  .hlbody{position:relative;flex:1 1 auto;min-height:0;display:flex;}
+  .hlscroll{flex:1 1 auto;min-width:0;overflow-x:auto;overflow-y:hidden;-webkit-overflow-scrolling:touch;overscroll-behavior-x:contain;}
+  .hltext{writing-mode:vertical-rl;-webkit-writing-mode:vertical-rl;text-orientation:mixed;width:max-content;margin-left:auto;
+    box-sizing:border-box;height:100%;font-size:16px;line-height:2.1;letter-spacing:.06em;color:#4b4335;
+    border-top:2px solid rgba(120,100,60,.4);padding-top:1em;padding-bottom:.6em;}
   .hltext p{margin:0 0 0 1.1em;}
+  .hltext p:last-child{margin-left:0;}
   .hltext p.sig{margin-top:auto;text-align:end;}
   .hltext .tcy{text-combine-upright:all;-webkit-text-combine:horizontal;}
-  .hlclose{display:block;margin:18px auto 0;font:inherit;font-size:14px;letter-spacing:.2em;padding:6px 18px;border:1px solid rgba(60,45,20,.35);background:rgba(255,255,255,.4);color:#2b2722;cursor:pointer;}
+  .hlfade{position:absolute;left:0;top:0;bottom:0;width:34px;pointer-events:none;opacity:0;transition:opacity .25s;
+    background:linear-gradient(90deg,#f1ebdc,rgba(241,235,220,0));}
+  .hlfade.on{opacity:1;}
+  .hlclose{flex:0 0 auto;display:block;margin:14px auto 0;font:inherit;font-size:14px;letter-spacing:.2em;padding:6px 18px;border:1px solid rgba(60,45,20,.35);background:rgba(255,255,255,.4);color:#2b2722;cursor:pointer;}
+  @media (max-width:560px){
+    .hlpaper{padding:20px 14px 12px;}
+    .hlpaper{height:80vh;}
+    .hltext{font-size:14px;line-height:1.8;letter-spacing:.04em;}
+    .hltext p{margin-left:.45em;}
+  }
 </style>
 <link rel="manifest" href="manifest.webmanifest">
 <meta name="theme-color" content="#cbc3ad">
@@ -188,6 +201,7 @@
 </div>
 <div class="hlwrap" id="hlwrap" hidden>
   <div class="hlpaper" role="dialog" aria-modal="true" aria-label="本棚にはさまった手紙">
+    <div class="hlbody"><div class="hlscroll" id="hlscroll">
     <div class="hltext">
       <p>この本を読んでくれた、あなたへ。</p>
       <p>「どうせ、また読むんだろ。持ってけ。腹が減ると、頭が回らねえ」　ヒロ</p>
@@ -198,6 +212,7 @@
       <p>「ここまで、来てくれたんだな。……いつか、そっちにも行く」　よしゆき</p>
       <p class="sig">うろこ堂の、本棚のうしろより</p>
     </div>
+    </div><div class="hlfade" id="hlfade" aria-hidden="true"></div></div>
     <button class="hlclose" type="button" id="hlclose">閉じる</button>
   </div>
 </div>
@@ -269,7 +284,20 @@
     if(window.ResizeObserver){ new ResizeObserver(place).observe(list); }
     var reduce=window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     setTimeout(function(){ place(); c.classList.add('show'); }, reduce?0:2600);
-    function openL(){ wrap.hidden=false; closeBtn.focus(); }
+    var sc=document.getElementById('hlscroll'), fade=document.getElementById('hlfade');
+    function fadeUpd(){
+      /* 横すべりの座標は、どのブラウザでも左はし＝0（入れ物は横書き）。左に続きがあるあいだだけ、左はしを薄くする */
+      fade.classList.toggle('on', sc.scrollWidth-sc.clientWidth>2 && sc.scrollLeft>2);
+    }
+    sc.addEventListener('scroll',fadeUpd,{passive:true});
+    /* 読み手が自分ですべらせるまでは、紙の中の幅が変わっても（字の形の読みこみなど）右はし＝書き出しに戻す */
+    var touched=false;
+    ['pointerdown','touchstart','wheel','keydown'].forEach(function(ev){ sc.addEventListener(ev,function(){ touched=true; },{passive:true}); });
+    function toStart(){ if(!wrap.hidden && !touched){ sc.scrollLeft=sc.scrollWidth; } fadeUpd(); }
+    if(window.ResizeObserver){ new ResizeObserver(toStart).observe(sc.querySelector('.hltext')); }
+    if(document.fonts && document.fonts.addEventListener){ document.fonts.addEventListener('loadingdone',toStart); }
+    window.addEventListener('resize',function(){ if(!wrap.hidden){ sc.scrollLeft=sc.scrollWidth; fadeUpd(); } });
+    function openL(){ touched=false; wrap.hidden=false; sc.scrollLeft=sc.scrollWidth; fadeUpd(); requestAnimationFrame(function(){ sc.scrollLeft=sc.scrollWidth; fadeUpd(); }); closeBtn.focus({preventScroll:true}); }
     function closeL(){ wrap.hidden=true; c.focus(); }
     c.addEventListener('click',function(e){ e.stopPropagation(); openL(); });
     closeBtn.addEventListener('click',closeL);
