@@ -150,28 +150,30 @@
   @media (prefers-reduced-motion:reduce){.hidletter{transition:none;}}
   .hlwrap{position:fixed;inset:0;z-index:50;display:flex;align-items:center;justify-content:center;background:rgba(30,22,10,.45);padding:0;}
   .hlwrap[hidden]{display:none;}
-  .hlpaper{position:relative;box-sizing:border-box;width:min(90vw,660px);height:min(80vh,34em);display:flex;flex-direction:column;
-    background:#f3eee0 url("tex/paper.jpg") center/360px auto repeat;color:#2b2722;
+  .hlpaper{position:relative;box-sizing:border-box;width:min(90vw,780px);height:min(80vh,34em);display:flex;flex-direction:column;
+    background:#f3eee0 url("tex/paper.jpg") center/cover no-repeat;color:#2b2722;
     box-shadow:0 18px 40px -12px rgba(0,0,0,.6), 0 0 0 1px rgba(60,45,20,.25);padding:26px 22px 16px;
     font-family:"Hiragino Mincho ProN","Yu Mincho",YuMincho,"Noto Serif JP",serif;}
   .hlbody{position:relative;flex:1 1 auto;min-height:0;display:flex;}
   .hlscroll{flex:1 1 auto;min-width:0;overflow-x:auto;overflow-y:hidden;-webkit-overflow-scrolling:touch;overscroll-behavior-x:contain;}
   .hltext{writing-mode:vertical-rl;-webkit-writing-mode:vertical-rl;text-orientation:mixed;width:max-content;margin-left:auto;
-    box-sizing:border-box;height:100%;font-size:16px;line-height:2.1;letter-spacing:.06em;color:#4b4335;
+    box-sizing:border-box;height:100%;font-size:16px;line-height:1.95;letter-spacing:.05em;color:#4b4335;
     border-top:2px solid rgba(120,100,60,.4);padding-top:1em;padding-bottom:.6em;}
-  .hltext p{margin:0 0 0 1.1em;}
-  .hltext p:last-child{margin-left:0;}
+  .hltext p{margin:0;}
+  .hltext>p,.hltext>.ent{margin-left:1.1em;}
+  .hltext>:last-child{margin-left:0;}
+  .hltext .who{text-align:end;white-space:nowrap;}
   .hltext p.sig{margin-top:auto;text-align:end;}
   .hltext .tcy{text-combine-upright:all;-webkit-text-combine:horizontal;}
-  .hlfade{position:absolute;left:0;top:0;bottom:0;width:34px;pointer-events:none;opacity:0;transition:opacity .25s;
+  .hlfade{position:absolute;left:0;top:0;bottom:0;width:34px;pointer-events:none;opacity:0;visibility:hidden;transition:opacity .25s,visibility .25s;
     background:linear-gradient(90deg,#f1ebdc,rgba(241,235,220,0));}
-  .hlfade.on{opacity:1;}
+  .hlfade.on{opacity:1;visibility:visible;}
   .hlclose{flex:0 0 auto;display:block;margin:14px auto 0;font:inherit;font-size:14px;letter-spacing:.2em;padding:6px 18px;border:1px solid rgba(60,45,20,.35);background:rgba(255,255,255,.4);color:#2b2722;cursor:pointer;}
   @media (max-width:560px){
     .hlpaper{padding:20px 14px 12px;}
     .hlpaper{height:80vh;}
-    .hltext{font-size:14px;line-height:1.8;letter-spacing:.04em;}
-    .hltext p{margin-left:.45em;}
+    .hltext{font-size:13px;line-height:1.55;letter-spacing:.02em;}
+    .hltext>p,.hltext>.ent{margin-left:.45em;}
   }
 </style>
 <link rel="manifest" href="manifest.webmanifest">
@@ -203,13 +205,13 @@
   <div class="hlpaper" role="dialog" aria-modal="true" aria-label="本棚にはさまった手紙">
     <div class="hlbody"><div class="hlscroll" id="hlscroll">
     <div class="hltext">
-      <p>この本を読んでくれた、あなたへ。</p>
-      <p>「どうせ、また読むんだろ。持ってけ。腹が減ると、頭が回らねえ」　ヒロ</p>
-      <p>「……だれ<span class="tcy">?</span>&nbsp;あー。たぶん、知ってる。足が」　ラリオ</p>
-      <p>「……一粒、張っとく。来ないほうに」　ナオ吉</p>
-      <p>「最後まで聞いた者が、また一人増えたのう。わしは、数えとる」　カク爺</p>
-      <p>「長い道だったろう。座っていきな」　ネネ</p>
-      <p>「ここまで、来てくれたんだな。……いつか、そっちにも行く」　よしゆき</p>
+      <p class="to">この本を読んでくれた、あなたへ。</p>
+      <div class="ent"><p class="say">「どうせ、また読むんだろ。持ってけ。腹が減ると、頭が回らねえ」</p><p class="who">ヒロ</p></div>
+      <div class="ent"><p class="say">「……だれ<span class="tcy">?</span>&nbsp;あー。たぶん、知ってる。足が」</p><p class="who">ラリオ</p></div>
+      <div class="ent"><p class="say">「……一粒、張っとく。来ないほうに」</p><p class="who">ナオ吉</p></div>
+      <div class="ent"><p class="say">「最後まで聞いた者が、また一人増えたのう。わしは、数えとる」</p><p class="who">カク爺</p></div>
+      <div class="ent"><p class="say">「長い道だったろう。座っていきな」</p><p class="who">ネネ</p></div>
+      <div class="ent"><p class="say">「ここまで、来てくれたんだな。……いつか、そっちにも行く」</p><p class="who">よしゆき</p></div>
       <p class="sig">うろこ堂の、本棚のうしろより</p>
     </div>
     </div><div class="hlfade" id="hlfade" aria-hidden="true"></div></div>
