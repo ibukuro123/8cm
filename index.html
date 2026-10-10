@@ -206,7 +206,7 @@
       <p>この本を読んでくれた、あなたへ。</p>
       <p>「どうせ、また読むんだろ。持ってけ。腹が減ると、頭が回らねえ」　ヒロ</p>
       <p>「……だれ<span class="tcy">?</span>&nbsp;あー。たぶん、知ってる。足が」　ラリオ</p>
-      <p>「……一粒、張っとく。また来るほうに」　ナオ吉</p>
+      <p>「……一粒、張っとく。来ないほうに」　ナオ吉</p>
       <p>「最後まで聞いた者が、また一人増えたのう。わしは、数えとる」　カク爺</p>
       <p>「長い道だったろう。座っていきな」　ネネ</p>
       <p>「ここまで、来てくれたんだな。……いつか、そっちにも行く」　よしゆき</p>
@@ -275,12 +275,15 @@
     list.appendChild(c);
     function place(){
       var img=tile.querySelector('img'); if(!img) return;
+      /* 並びの順や段に頼らず、北の巻の表紙そのものの位置から決める（offsetTop はブラウザによって基準がちがうので使わない） */
       var r=img.getBoundingClientRect(), lr=list.getBoundingClientRect();
       c.style.left=(r.left-lr.left+r.width*0.56)+'px';
-      c.style.top=(img.offsetTop-15)+'px';
+      c.style.top=(r.top-lr.top-15)+'px';
     }
     place();
     window.addEventListener('resize',place);
+    tile.addEventListener('animationend',place);
+    var cov=tile.querySelector('img'); if(cov && !cov.complete) cov.addEventListener('load',place,{once:true});
     if(window.ResizeObserver){ new ResizeObserver(place).observe(list); }
     var reduce=window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     setTimeout(function(){ place(); c.classList.add('show'); }, reduce?0:2600);
