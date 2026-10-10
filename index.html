@@ -148,33 +148,38 @@
   .hidletter:hover svg,.hidletter:focus-visible svg{transform:translateY(-2px);}
   .hidletter:focus-visible{outline:2px solid rgba(168,64,44,.6);outline-offset:3px;}
   @media (prefers-reduced-motion:reduce){.hidletter{transition:none;}}
-  .hlwrap{position:fixed;inset:0;z-index:50;display:flex;align-items:center;justify-content:center;background:rgba(30,22,10,.45);padding:0;}
+  .hlwrap{position:fixed;inset:0;z-index:50;display:flex;align-items:center;justify-content:center;background:rgba(30,22,10,.45);}
   .hlwrap[hidden]{display:none;}
-  .hlpaper{position:relative;box-sizing:border-box;width:min(90vw,780px);height:min(80vh,34em);display:flex;flex-direction:column;
+  .hlpaper{position:relative;box-sizing:border-box;width:min(90vw,520px);height:min(80vh,640px);display:flex;flex-direction:column;
     background:#f3eee0 url("tex/paper.jpg") center/cover no-repeat;color:#2b2722;
-    box-shadow:0 18px 40px -12px rgba(0,0,0,.6), 0 0 0 1px rgba(60,45,20,.25);padding:26px 22px 16px;
-    font-family:"Hiragino Mincho ProN","Yu Mincho",YuMincho,"Noto Serif JP",serif;}
-  .hlbody{position:relative;flex:1 1 auto;min-height:0;display:flex;}
-  .hlscroll{flex:1 1 auto;min-width:0;overflow-x:auto;overflow-y:hidden;-webkit-overflow-scrolling:touch;overscroll-behavior-x:contain;}
-  .hltext{writing-mode:vertical-rl;-webkit-writing-mode:vertical-rl;text-orientation:mixed;width:max-content;margin-left:auto;
-    box-sizing:border-box;height:100%;font-size:16px;line-height:1.95;letter-spacing:.05em;color:#4b4335;
-    border-top:2px solid rgba(120,100,60,.4);padding-top:1em;padding-bottom:.6em;}
-  .hltext p{margin:0;}
-  .hltext>p,.hltext>.ent{margin-left:1.1em;}
-  .hltext>:last-child{margin-left:0;}
-  .hltext .who{text-align:end;white-space:nowrap;}
-  .hltext p.sig{margin-top:auto;text-align:end;}
-  .hltext .tcy{text-combine-upright:all;-webkit-text-combine:horizontal;}
-  .hlfade{position:absolute;left:0;top:0;bottom:0;width:34px;pointer-events:none;opacity:0;visibility:hidden;transition:opacity .25s,visibility .25s;
-    background:linear-gradient(90deg,#f1ebdc,rgba(241,235,220,0));}
-  .hlfade.on{opacity:1;visibility:visible;}
-  .hlclose{flex:0 0 auto;display:block;margin:14px auto 0;font:inherit;font-size:14px;letter-spacing:.2em;padding:6px 18px;border:1px solid rgba(60,45,20,.35);background:rgba(255,255,255,.4);color:#2b2722;cursor:pointer;}
-  @media (max-width:560px){
-    .hlpaper{padding:20px 14px 12px;}
-    .hlpaper{height:80vh;}
-    .hltext{font-size:13px;line-height:1.55;letter-spacing:.02em;}
-    .hltext>p,.hltext>.ent{margin-left:.45em;}
+    box-shadow:0 18px 40px -12px rgba(0,0,0,.6), 0 0 0 1px rgba(60,45,20,.25);padding:28px 22px 12px;
+    font-family:"Hiragino Mincho ProN","Yu Mincho",YuMincho,"Noto Serif JP",serif;touch-action:pan-y;user-select:none;-webkit-user-select:none;}
+  .hlpages{position:relative;flex:1 1 auto;min-height:0;}
+  .hlpage{position:absolute;inset:0;display:none;justify-content:center;align-items:stretch;}
+  .hlpage.on{display:flex;animation:hlflip .35s ease-out;}
+  @keyframes hlflip{from{opacity:.1;transform:translateX(var(--hldx,-12px));}to{opacity:1;transform:none;}}
+  .hlv{writing-mode:vertical-rl;-webkit-writing-mode:vertical-rl;text-orientation:mixed;height:100%;
+    font-size:17px;line-height:1.95;letter-spacing:.05em;color:#3f382c;}
+  .hlv p{margin:0;}
+  .hlv .who{text-align:end;white-space:nowrap;margin-right:.5em;}
+  .hlv .sig{text-align:end;}
+  .hlv .tcy{text-combine-upright:all;-webkit-text-combine:horizontal;}
+  .hlzone{position:absolute;top:0;bottom:56px;width:32%;border:none;background:none;padding:0;cursor:pointer;z-index:1;}
+  .hlzone.l{left:0;} .hlzone.r{right:0;}
+  .hlzone:focus-visible{outline:1.5px dashed rgba(168,64,44,.7);outline-offset:-6px;}
+  .hlfoot{position:relative;z-index:2;flex:0 0 auto;display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:10px;min-height:44px;}
+  .hldots{display:flex;gap:7px;flex-direction:row-reverse;}
+  .hldots i{display:block;width:7px;height:7px;border-radius:50%;background:rgba(60,45,20,.22);}
+  .hldots i.on{background:#4b4335;}
+  .hlnum{font-size:13px;letter-spacing:.12em;color:#6d6557;min-width:3.4em;text-align:center;}
+  .hlclose{font:inherit;font-size:14px;letter-spacing:.2em;padding:6px 16px;border:1px solid rgba(60,45,20,.35);background:rgba(255,255,255,.45);color:#2b2722;cursor:pointer;}
+  @media (max-height:460px){
+    .hlpaper{padding:16px 22px 8px;height:86vh;}
+    .hlv{font-size:15px;line-height:1.8;}
+    .hlfoot{margin-top:4px;min-height:38px;}
+    .hlzone{bottom:44px;}
   }
+  @media (prefers-reduced-motion:reduce){.hlpage.on{animation:none;}}
 </style>
 <link rel="manifest" href="manifest.webmanifest">
 <meta name="theme-color" content="#cbc3ad">
@@ -202,20 +207,24 @@
   <footer>© 2026 胃袋一二三</footer>
 </div>
 <div class="hlwrap" id="hlwrap" hidden>
-  <div class="hlpaper" role="dialog" aria-modal="true" aria-label="本棚にはさまった手紙">
-    <div class="hlbody"><div class="hlscroll" id="hlscroll">
-    <div class="hltext">
-      <p class="to">この本を読んでくれた、あなたへ。</p>
-      <div class="ent"><p class="say">「どうせ、また読むんだろ。持ってけ。腹が減ると、頭が回らねえ」</p><p class="who">ヒロ</p></div>
-      <div class="ent"><p class="say">「……だれ<span class="tcy">?</span>&nbsp;あー。たぶん、知ってる。足が」</p><p class="who">ラリオ</p></div>
-      <div class="ent"><p class="say">「……一粒、張っとく。来ないほうに」</p><p class="who">ナオ吉</p></div>
-      <div class="ent"><p class="say">「最後まで聞いた者が、また一人増えたのう。わしは、数えとる」</p><p class="who">カク爺</p></div>
-      <div class="ent"><p class="say">「長い道だったろう。座っていきな」</p><p class="who">ネネ</p></div>
-      <div class="ent"><p class="say">「ここまで、来てくれたんだな。……いつか、そっちにも行く」</p><p class="who">よしゆき</p></div>
-      <p class="sig">うろこ堂の、本棚のうしろより</p>
+  <div class="hlpaper" id="hlpaper" role="dialog" aria-modal="true" aria-label="本棚にはさまった手紙">
+    <div class="hlpages" id="hlpages" aria-live="polite">
+      <section class="hlpage"><div class="hlv"><p>この本を読んでくれた、あなたへ。</p></div></section>
+      <section class="hlpage"><div class="hlv"><p class="say">どうせ、最後まで読むと思ってた。……ありがとな</p><p class="who">ヒロ</p></div></section>
+      <section class="hlpage"><div class="hlv"><p class="say">配達ってさ、届くまでが仕事なんだよ。……届いた<span class="tcy">?</span>&nbsp;ありがと</p><p class="who">ラリオ</p></div></section>
+      <section class="hlpage"><div class="hlv"><p class="say">……五十一回目。あんたの勝ちだ。……ありがとよ</p><p class="who">ナオ吉</p></div></section>
+      <section class="hlpage"><div class="hlv"><p class="say">聞いてるか。……聞いておったな。礼を言うぞ</p><p class="who">カク爺</p></div></section>
+      <section class="hlpage"><div class="hlv"><p class="say">長い道だったろう。座っていきな。……ありがとね</p><p class="who">ネネ</p></div></section>
+      <section class="hlpage"><div class="hlv"><p class="say">ここまで、来てくれたんだな。ありがとう。……いつか、そっちにも行く</p><p class="who">よしゆき</p></div></section>
+      <section class="hlpage"><div class="hlv"><p class="sig">うろこ堂の、本棚のうしろより</p></div></section>
     </div>
-    </div><div class="hlfade" id="hlfade" aria-hidden="true"></div></div>
-    <button class="hlclose" type="button" id="hlclose">閉じる</button>
+    <button class="hlzone l" type="button" id="hlnext" aria-label="次のページ"></button>
+    <button class="hlzone r" type="button" id="hlprev" aria-label="前のページ"></button>
+    <div class="hlfoot">
+      <button class="hlclose" type="button" id="hlclose">閉じる</button>
+      <span class="hlnum" id="hlnum"></span>
+      <span class="hldots" id="hldots" aria-hidden="true"></span>
+    </div>
   </div>
 </div>
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
@@ -289,20 +298,36 @@
     if(window.ResizeObserver){ new ResizeObserver(place).observe(list); }
     var reduce=window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     setTimeout(function(){ place(); c.classList.add('show'); }, reduce?0:2600);
-    var sc=document.getElementById('hlscroll'), fade=document.getElementById('hlfade');
-    function fadeUpd(){
-      /* 横すべりの座標は、どのブラウザでも左はし＝0（入れ物は横書き）。左に続きがあるあいだだけ、左はしを薄くする */
-      fade.classList.toggle('on', sc.scrollWidth-sc.clientWidth>2 && sc.scrollLeft>2);
+    /* 一人一ページ。縦書きの本と同じく左へめくる（左はし・右へすべらせる・←キー＝次、右はし・左へすべらせる・→キー＝前） */
+    var pgs=[].slice.call(document.querySelectorAll('#hlpages .hlpage')), cur=0;
+    var KN=['一','二','三','四','五','六','七','八','九','十'];
+    var dots=document.getElementById('hldots'), num=document.getElementById('hlnum');
+    dots.innerHTML=pgs.map(function(){ return '<i></i>'; }).join('');
+    function show(n,dir){
+      if(n<0||n>pgs.length-1) return;
+      cur=n;
+      pgs.forEach(function(pg,k){ pg.classList.toggle('on',k===cur); if(k===cur) pg.style.setProperty('--hldx',(dir<0?12:-12)+'px'); });
+      [].forEach.call(dots.children,function(d,k){ d.classList.toggle('on',k===cur); });
+      num.textContent=KN[cur]+'／'+KN[pgs.length-1];
+      document.getElementById('hlnext').disabled=(cur===pgs.length-1);
+      document.getElementById('hlprev').disabled=(cur===0);
     }
-    sc.addEventListener('scroll',fadeUpd,{passive:true});
-    /* 読み手が自分ですべらせるまでは、紙の中の幅が変わっても（字の形の読みこみなど）右はし＝書き出しに戻す */
-    var touched=false;
-    ['pointerdown','touchstart','wheel','keydown'].forEach(function(ev){ sc.addEventListener(ev,function(){ touched=true; },{passive:true}); });
-    function toStart(){ if(!wrap.hidden && !touched){ sc.scrollLeft=sc.scrollWidth; } fadeUpd(); }
-    if(window.ResizeObserver){ new ResizeObserver(toStart).observe(sc.querySelector('.hltext')); }
-    if(document.fonts && document.fonts.addEventListener){ document.fonts.addEventListener('loadingdone',toStart); }
-    window.addEventListener('resize',function(){ if(!wrap.hidden){ sc.scrollLeft=sc.scrollWidth; fadeUpd(); } });
-    function openL(){ touched=false; wrap.hidden=false; sc.scrollLeft=sc.scrollWidth; fadeUpd(); requestAnimationFrame(function(){ sc.scrollLeft=sc.scrollWidth; fadeUpd(); }); closeBtn.focus({preventScroll:true}); }
+    function nextP(){ show(cur+1,1); } function prevP(){ show(cur-1,-1); }
+    var swiped=false;
+    document.getElementById('hlnext').addEventListener('click',function(){ if(swiped) return; nextP(); });
+    document.getElementById('hlprev').addEventListener('click',function(){ if(swiped) return; prevP(); });
+    var paper=document.getElementById('hlpaper'), sx=null, sy=null;
+    paper.addEventListener('pointerdown',function(e){ sx=e.clientX; sy=e.clientY; });
+    paper.addEventListener('pointerup',function(e){
+      if(sx===null) return; var dx=e.clientX-sx, dy=e.clientY-sy; sx=null;
+      if(Math.abs(dx)>40 && Math.abs(dx)>Math.abs(dy)){ swiped=true; setTimeout(function(){ swiped=false; },350); if(dx>0) nextP(); else prevP(); }
+    });
+    document.addEventListener('keydown',function(e){
+      if(wrap.hidden) return;
+      if(e.key==='ArrowLeft'||e.key==='ArrowDown'||e.key==='PageDown'){ e.preventDefault(); nextP(); }
+      else if(e.key==='ArrowRight'||e.key==='ArrowUp'||e.key==='PageUp'){ e.preventDefault(); prevP(); }
+    });
+    function openL(){ wrap.hidden=false; show(0,1); closeBtn.focus({preventScroll:true}); }
     function closeL(){ wrap.hidden=true; c.focus(); }
     c.addEventListener('click',function(e){ e.stopPropagation(); openL(); });
     closeBtn.addEventListener('click',closeL);
