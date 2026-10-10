@@ -141,6 +141,25 @@
     .gap{padding:38px 16px 34px;}
     main{grid-template-columns:repeat(auto-fill,minmax(92px,1fr));gap:18px 12px;}
   }
+  /* 本棚にはさまった手紙（九作すべて読了した人にだけ） */
+  .hidletter{position:absolute;z-index:2;width:30px;height:16px;padding:0;margin:0;border:0;background:none;cursor:pointer;opacity:0;transition:opacity .9s ease;}
+  .hidletter.show{opacity:1;}
+  .hidletter svg{display:block;width:30px;height:16px;overflow:visible;}
+  .hidletter:hover svg,.hidletter:focus-visible svg{transform:translateY(-2px);}
+  .hidletter:focus-visible{outline:2px solid rgba(168,64,44,.6);outline-offset:3px;}
+  @media (prefers-reduced-motion:reduce){.hidletter{transition:none;}}
+  .hlwrap{position:fixed;inset:0;z-index:50;display:flex;align-items:center;justify-content:center;background:rgba(30,22,10,.45);padding:16px;}
+  .hlwrap[hidden]{display:none;}
+  .hlpaper{position:relative;max-width:calc(100vw - 32px);max-height:calc(100vh - 32px);overflow:auto;
+    background:#f3eee0 url("tex/paper.jpg") center/360px auto repeat;color:#2b2722;
+    box-shadow:0 18px 40px -12px rgba(0,0,0,.6), 0 0 0 1px rgba(60,45,20,.25);padding:30px 30px 24px;
+    font-family:"Hiragino Mincho ProN","Yu Mincho",YuMincho,"Noto Serif JP",serif;}
+  .hltext{writing-mode:vertical-rl;text-orientation:mixed;height:min(26em,calc(100vh - 140px));font-size:16px;line-height:2.1;letter-spacing:.06em;color:#4b4335;
+    border-top:2px solid rgba(120,100,60,.4);padding-top:1em;margin:0 auto;}
+  .hltext p{margin:0 0 0 1.1em;}
+  .hltext p.sig{margin-top:auto;text-align:end;}
+  .hltext .tcy{text-combine-upright:all;-webkit-text-combine:horizontal;}
+  .hlclose{display:block;margin:18px auto 0;font:inherit;font-size:14px;letter-spacing:.2em;padding:6px 18px;border:1px solid rgba(60,45,20,.35);background:rgba(255,255,255,.4);color:#2b2722;cursor:pointer;}
 </style>
 <link rel="manifest" href="manifest.webmanifest">
 <meta name="theme-color" content="#cbc3ad">
@@ -166,6 +185,21 @@
     <div class="tlbar"><div class="nenpu" id="tlbar"></div></div>
   </section>
   <footer>© 2026 胃袋一二三</footer>
+</div>
+<div class="hlwrap" id="hlwrap" hidden>
+  <div class="hlpaper" role="dialog" aria-modal="true" aria-label="本棚にはさまった手紙">
+    <div class="hltext">
+      <p>この本を読んでくれた、あなたへ。</p>
+      <p>「どうせ、また読むんだろ。持ってけ。腹が減ると、頭が回らねえ」　ヒロ</p>
+      <p>「……だれ<span class="tcy">?</span>&nbsp;あー。たぶん、知ってる。足が」　ラリオ</p>
+      <p>「……一粒、張っとく。また来るほうに」　ナオ吉</p>
+      <p>「最後まで聞いた者が、また一人増えたのう。わしは、数えとる」　カク爺</p>
+      <p>「長い道だったろう。座っていきな」　ネネ</p>
+      <p>「ここまで、来てくれたんだな。……いつか、そっちにも行く」　よしゆき</p>
+      <p class="sig">うろこ堂の、本棚のうしろより</p>
+    </div>
+    <button class="hlclose" type="button" id="hlclose">閉じる</button>
+  </div>
 </div>
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
 <script>
@@ -214,6 +248,34 @@
     });
   }
   runDeliver();
+  (function hiddenLetter(){
+    /* 九作すべての読了の記録（'done:'+題）がそろったときだけ、いちばん端の本（北）の上のふちから紙の角を出す */
+    if(!BOOKS.every(isDone)) return;
+    var last=BOOKS[BOOKS.length-1];
+    var tile=list.querySelector('.tile[data-slug="'+last.slug+'"]'); if(!tile) return;
+    var wrap=document.getElementById('hlwrap'), closeBtn=document.getElementById('hlclose');
+    var c=document.createElement('button');
+    c.type='button'; c.className='hidletter'; c.setAttribute('aria-label','本棚にはさまった手紙を開く');
+    c.innerHTML='<svg viewBox="0 0 30 16" aria-hidden="true"><polygon points="3,16 9,2 27,5 25,16" fill="#f6f2e6" stroke="rgba(90,75,50,.45)" stroke-width=".8"/><line x1="11" y1="8" x2="22" y2="9.5" stroke="rgba(90,75,50,.25)" stroke-width=".6"/></svg>';
+    list.appendChild(c);
+    function place(){
+      var img=tile.querySelector('img'); if(!img) return;
+      var r=img.getBoundingClientRect(), lr=list.getBoundingClientRect();
+      c.style.left=(r.left-lr.left+r.width*0.56)+'px';
+      c.style.top=(img.offsetTop-15)+'px';
+    }
+    place();
+    window.addEventListener('resize',place);
+    if(window.ResizeObserver){ new ResizeObserver(place).observe(list); }
+    var reduce=window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    setTimeout(function(){ place(); c.classList.add('show'); }, reduce?0:2600);
+    function openL(){ wrap.hidden=false; closeBtn.focus(); }
+    function closeL(){ wrap.hidden=true; c.focus(); }
+    c.addEventListener('click',function(e){ e.stopPropagation(); openL(); });
+    closeBtn.addEventListener('click',closeL);
+    wrap.addEventListener('click',function(e){ if(e.target===wrap) closeL(); });
+    document.addEventListener('keydown',function(e){ if(!wrap.hidden && e.key==='Escape') closeL(); });
+  })();
   function placePanel(tile){
     var tiles=[].slice.call(list.querySelectorAll('.tile')), top=tile.offsetTop, lastInRow=tile;
     tiles.forEach(function(t){ if(Math.abs(t.offsetTop-top)<4) lastInRow=t; });
