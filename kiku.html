@@ -370,8 +370,7 @@ const MOTIF = 'chart';
   svg.innerHTML =
     '<polyline class="ghost" points="'+d+'" fill="none"/>'
     + '<clipPath id="chartClip"><rect id="chartRect" x="0" y="0" width="0" height="26"/></clipPath>'
-    + '<g clip-path="url(#chartClip)"><polyline class="ink" points="'+d+'" fill="none"/></g>'
-    + '<g id="finalmark"><line x1="4" y1="4" x2="4" y2="24"/></g>';
+    + '<g clip-path="url(#chartClip)"><polyline class="ink" points="'+d+'" fill="none"/></g>';
 })();
 
 
@@ -616,8 +615,6 @@ function update(dir){
     if(r){ const cw = 10 + prog*286; r.setAttribute('x', (300 - cw).toFixed(1)); r.setAttribute('width', cw.toFixed(1)); }
     var ink = document.querySelector('#rulerSvg .ink');
     if(ink) ink.classList.toggle('fin', idx===last);
-    var fm = document.getElementById('finalmark');
-    if(fm) fm.classList.toggle('show', idx===last);
   })();
 
   let name='';
