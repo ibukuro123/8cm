@@ -345,7 +345,7 @@ const MOTIF = 'cards';
   const svg = document.getElementById('rulerSvg');
   let s='';
   for(let g=0; g<5; g++){
-    const cx = 28 + g*61, w = 22, h = 15, x = cx - w/2, y = 5;
+    const cx = 272 - g*61, w = 22, h = 15, x = cx - w/2, y = 5;
     s += `<g class="card" data-g="${g}" style="transform-origin:${cx}px 12.5px">`
       +  `<rect class="back" x="${x}" y="${y}" width="${w}" height="${h}" rx="2"/>`
       +  `<line class="backline" x1="${x+4}" y1="${y+h-4}" x2="${x+w-4}" y2="${y+4}"/>`

@@ -342,7 +342,7 @@ const MOTIF = 'rooms';
   if(MOTIF==='rooms'){
     const n = DATA.chapters.length, gap = 4, w = (284 - gap*(n-1))/n;
     for(let i=0;i<n;i++){
-      const x = 8 + i*(w+gap);
+      const x = 8 + (n-1-i)*(w+gap);
       s += `<rect class="win" id="win${i}" x="${x.toFixed(1)}" y="7" width="${w.toFixed(1)}" height="13" rx="1.5"/>`;
     }
     s += '<g id="finalmark" style="display:none"></g><g id="mark" style="display:none"></g>';
@@ -352,16 +352,16 @@ const MOTIF = 'rooms';
       const x = 8 + (284*i/5);
       s += `<circle cx="${x}" cy="20" r="2.2" fill="none" stroke="#5c5343" stroke-width="1"/>`;
     }
-    s += '<g id="finalmark"><circle cx="292" cy="20" r="4.4" fill="#a8402c"/></g>';
-    s += '<g id="mark" transform="translate(8,0)"><circle cx="0" cy="20" r="3.4" fill="#4d5157"/></g>';
+    s += '<g id="finalmark"><circle cx="8" cy="20" r="4.4" fill="#a8402c"/></g>';
+    s += '<g id="mark" transform="translate(292,0)"><circle cx="0" cy="20" r="3.4" fill="#4d5157"/></g>';
   } else {
     s += '<line class="rulerline" x1="8" y1="20" x2="292" y2="20"/>';
     for(let i=0;i<=10;i++){
       const x = 8 + (284*i/10), big = (i===0||i===10);
       s += `<line class="tick${big?'':' mm'}" x1="${x}" y1="${big?9:14}" x2="${x}" y2="20"/>`;
     }
-    s += '<g id="finalmark"><line x1="292" y1="4" x2="292" y2="24"/></g>';
-    s += '<g id="mark" transform="translate(8,0)"><line x1="0" y1="6" x2="0" y2="24"/></g>';
+    s += '<g id="finalmark"><line x1="8" y1="4" x2="8" y2="24"/></g>';
+    s += '<g id="mark" transform="translate(292,0)"><line x1="0" y1="6" x2="0" y2="24"/></g>';
   }
   svg.innerHTML = s;
 })();
@@ -603,7 +603,7 @@ function update(dir){
   const last = pages.length-1;
   try{ if(idx===last && last>0) localStorage.setItem('done:'+DATA.title,'1'); }catch(e){}
   const prog = last>0 ? idx/last : 0;
-  document.getElementById('mark').setAttribute('transform','translate('+(8+284*prog)+',0)');
+  document.getElementById('mark').setAttribute('transform','translate('+(292-284*prog)+',0)');
   document.getElementById('finalmark').classList.toggle('show', idx===last);
   if(MOTIF==='rooms'){
     let cur = 0;

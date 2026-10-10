@@ -362,10 +362,10 @@ const MOTIF = 'chart';
     for(let k=0; k<5; k++){
       const t = k/5, f = a + (b-a)*t;
       const v = v0 + (v1-v0)*t + Math.sin((i*3+k)*1.7)*0.02;
-      pts.push((10 + f*286).toFixed(1) + ',' + y(v).toFixed(1));
+      pts.push((290 - f*286).toFixed(1) + ',' + y(v).toFixed(1));
     }
   }
-  pts.push((296).toFixed(1) + ',' + y(VAL[VAL.length-1]).toFixed(1));
+  pts.push((4).toFixed(1) + ',' + y(VAL[VAL.length-1]).toFixed(1));
   const d = pts.join(' ');
   svg.innerHTML =
     '<polyline class="ghost" points="'+d+'" fill="none"/>'
@@ -612,7 +612,7 @@ function update(dir){
   const prog = last>0 ? idx/last : 0;
   (function(){
     var r = document.getElementById('chartRect');
-    if(r) r.setAttribute('width', (10 + prog*286).toFixed(1));
+    if(r){ const cw = 10 + prog*286; r.setAttribute('x', (300 - cw).toFixed(1)); r.setAttribute('width', cw.toFixed(1)); }
     var ink = document.querySelector('#rulerSvg .ink');
     if(ink) ink.classList.toggle('fin', idx===last);
   })();
