@@ -1,5 +1,5 @@
 /* 『8センチメートル』シリーズ  オフライン用 */
-const CACHE = '8cm-v23';
+const CACHE = '8cm-v24';
 const ASSETS = [
   './', './index.html',
   './8cm.html', './lario.html', './9cm.html', './hanpo.html', './1cm.html', './kiku.html', './minami.html', './hitoshizuku.html',

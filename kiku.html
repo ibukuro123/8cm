@@ -362,15 +362,16 @@ const MOTIF = 'chart';
     for(let k=0; k<5; k++){
       const t = k/5, f = a + (b-a)*t;
       const v = v0 + (v1-v0)*t + Math.sin((i*3+k)*1.7)*0.02;
-      pts.push((290 - f*286).toFixed(1) + ',' + y(v).toFixed(1));
+      pts.push((10 + f*286).toFixed(1) + ',' + y(v).toFixed(1));
     }
   }
-  pts.push((4).toFixed(1) + ',' + y(VAL[VAL.length-1]).toFixed(1));
+  pts.push((296).toFixed(1) + ',' + y(VAL[VAL.length-1]).toFixed(1));
   const d = pts.join(' ');
   svg.innerHTML =
     '<polyline class="ghost" points="'+d+'" fill="none"/>'
     + '<clipPath id="chartClip"><rect id="chartRect" x="0" y="0" width="0" height="26"/></clipPath>'
-    + '<g clip-path="url(#chartClip)"><polyline class="ink" points="'+d+'" fill="none"/></g>';
+    + '<g clip-path="url(#chartClip)"><polyline class="ink" points="'+d+'" fill="none"/></g>'
+    + '<g id="finalmark"><line x1="4" y1="4" x2="4" y2="24"/></g>';
 })();
 
 
@@ -615,6 +616,8 @@ function update(dir){
     if(r){ const cw = 10 + prog*286; r.setAttribute('x', (300 - cw).toFixed(1)); r.setAttribute('width', cw.toFixed(1)); }
     var ink = document.querySelector('#rulerSvg .ink');
     if(ink) ink.classList.toggle('fin', idx===last);
+    var fm = document.getElementById('finalmark');
+    if(fm) fm.classList.toggle('show', idx===last);
   })();
 
   let name='';
