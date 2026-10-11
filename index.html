@@ -168,8 +168,11 @@
   .hlfoot{flex:0 0 auto;display:flex;justify-content:center;margin-top:10px;}
   .hlclose{font:inherit;font-size:14px;letter-spacing:.2em;padding:6px 18px;border:1px solid rgba(60,45,20,.35);background:rgba(255,255,255,.45);color:#2b2722;cursor:pointer;}
   @media (max-height:460px){
-    .hlpaper{flex-direction:row;padding:8px 12px;height:96vh;width:min(92vw,720px);}
+    .hlpaper{flex-direction:row;padding:5px 12px;height:98vh;width:min(92vw,720px);}
     .hlfoot{order:-1;align-items:flex-end;margin:0 10px 0 0;}
+    /* 画面の高さが低いときだけ：書き出しの下げを十分の一に、いちばん長い列を句点で二列に */
+    .hlv .txt{padding-top:10%;}
+    .hlv .seg{display:block;}
   }
 </style>
 <link rel="manifest" href="manifest.webmanifest">
@@ -199,7 +202,7 @@
 </div>
 <div class="hlwrap" id="hlwrap" hidden>
   <div class="hlpaper" id="hlpaper" role="dialog" aria-modal="true" aria-label="本棚にはさまった手紙">
-    <div class="hlbody" id="hlbody"><div class="hlv" id="hlv"><div class="txt"><p class="col">この本を読んでくれた、あなたへ。</p><p class="col sp">ぼくはなぐらよしゆきといいます。</p><p class="col sp">ずっと、本に手紙を挟んできました。</p><p class="col">だれが読むのか、わからないまま。</p><p class="col sp">読んだのは、あなたでした。</p><p class="col sp">ありがとう。</p><p class="col sp">迎えに行きます。こんどは、ぼくのほうから。</p></div><p class="col who">よしゆき</p></div></div>
+    <div class="hlbody" id="hlbody"><div class="hlv" id="hlv"><div class="txt"><p class="col">この本を読んでくれた、あなたへ。</p><p class="col sp">ぼくはなぐらよしゆきといいます。</p><p class="col sp">ずっと、本に手紙を挟んできました。</p><p class="col">だれが読むのか、わからないまま。</p><p class="col sp">読んだのは、あなたでした。</p><p class="col sp">ありがとう。</p><p class="col sp"><span class="seg">迎えに行きます。</span><span class="seg">こんどは、ぼくのほうから。</span></p></div><p class="col who">よしゆき</p></div></div>
     <div class="hlfoot"><button class="hlclose" type="button" id="hlclose">閉じる</button></div>
   </div>
 </div>
@@ -273,14 +276,18 @@
     if(window.ResizeObserver){ new ResizeObserver(place).observe(list); }
     var reduce=window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     setTimeout(function(){ place(); c.classList.add('show'); }, reduce?0:2600);
-    /* 字は18〜19pxを目安に、いちばん長い列（天から五分の一下げたうえで）と列のかたまりの幅が紙に収まる大きさ。列は分けない */
+    /* 字は18〜19pxを目安に、いちばん長い列（天から五分の一下げたうえで）と列のかたまりの幅が紙に収まる大きさ。列は分けない
+       （画面の高さが低いときだけ、下げは十分の一、いちばん長い列は句点で二列に分ける） */
     var paper=document.getElementById('hlpaper'), body=document.getElementById('hlbody'), hv=document.getElementById('hlv');
-    var maxN=Math.max.apply(null,[].map.call(hv.querySelectorAll('.col'),function(x){ return Array.from(x.textContent).length; }));
+    var low=window.matchMedia('(max-height:460px)');
+    function maxN(){ return Math.max.apply(null,[].map.call(hv.querySelectorAll('.col'),function(x){
+      var segs=x.querySelectorAll('.seg'), u=(low.matches&&segs.length)?[].slice.call(segs):[x];
+      return Math.max.apply(null,u.map(function(y){ return Array.from(y.textContent).length; })); })); }
     function fit(){
       var H=body.clientHeight, W=body.clientWidth; if(!H||!W) return;
       paper.style.setProperty('--hlfs','19px');
       var w19=hv.getBoundingClientRect().width;
-      var byH=(H*0.8)/(maxN*1.05)-0.2, byW=19*W/w19*0.98;
+      var byH=(H*(low.matches?0.9:0.8))/(maxN()*1.05)-0.2, byW=19*W/w19*0.98;
       var fs=Math.floor(Math.min(19,byH,byW)*10)/10;
       paper.style.setProperty('--hlfs',Math.max(9,fs)+'px');
     }
