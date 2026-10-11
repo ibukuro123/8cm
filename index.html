@@ -161,9 +161,11 @@
   .hlv p{margin:0;}
   .hlv .col{white-space:nowrap;}
   .hlv .txt{display:block;padding-top:20%;}
-  .hlv .txt .col{display:block;}
-  .hlv .txt .col.sp{margin-right:.6em;}
-  .hlv .who{text-align:end;margin-right:1.6em;padding-bottom:4%;}
+  /* 列のかたまり：高さはいちばん長い列にそろえる（JSで測る）。署名はその下のはしに地付き。空行は一列ぶんの空き（収まらない画面では詰める） */
+  .hlv .blk{display:block;}
+  .hlv .blk .col{display:block;}
+  .hlv .blk .hsp{display:block;width:var(--hlgap,1.6em);}
+  .hlv .who{text-align:end;}
   .hlv .tcy{text-combine-upright:all;-webkit-text-combine:horizontal;}
   .hlfoot{flex:0 0 auto;display:flex;justify-content:center;margin-top:10px;}
   .hlclose{font:inherit;font-size:14px;letter-spacing:.2em;padding:6px 18px;border:1px solid rgba(60,45,20,.35);background:rgba(255,255,255,.45);color:#2b2722;cursor:pointer;}
@@ -201,7 +203,7 @@
 </div>
 <div class="hlwrap" id="hlwrap" hidden>
   <div class="hlpaper" id="hlpaper" role="dialog" aria-modal="true" aria-label="本棚にはさまった手紙">
-    <div class="hlbody" id="hlbody"><div class="hlv" id="hlv"><div class="txt"><p class="col">この本を読んでくれた、あなたへ。</p><p class="col sp">ぼくはなぐらよしゆきといいます。</p><p class="col">背丈は九センチです。</p><p class="col sp">最後まで、ありがとう。</p><p class="col sp">いつか、そっちにも行きます。</p></div><p class="col who">よしゆき</p></div></div>
+    <div class="hlbody" id="hlbody"><div class="hlv" id="hlv"><div class="txt"><div class="blk"><p class="col">この本を読んでくれた、あなたへ。</p><span class="hsp" aria-hidden="true"></span><p class="col">ぼくはなぐらよしゆきといいます。</p><p class="col">背丈は九センチです。</p><span class="hsp" aria-hidden="true"></span><p class="col">最後まで、ありがとう。</p><span class="hsp" aria-hidden="true"></span><p class="col">いつか、そっちにも行きます。</p><span class="hsp" aria-hidden="true"></span><p class="col who">よしゆき</p></div></div></div></div>
     <div class="hlfoot"><button class="hlclose" type="button" id="hlclose">閉じる</button></div>
   </div>
 </div>
@@ -280,15 +282,26 @@
     var paper=document.getElementById('hlpaper'), body=document.getElementById('hlbody'), hv=document.getElementById('hlv');
     var low=window.matchMedia('(max-height:460px)');
     var maxN=Math.max.apply(null,[].map.call(hv.querySelectorAll('.col'),function(x){ return Array.from(x.textContent).length; }));
+    var blk=hv.querySelector('.blk');
+    function colH(){ blk.style.height=''; var m=0;
+      [].forEach.call(blk.querySelectorAll('.col'),function(c){ var rg=document.createRange(); rg.selectNodeContents(c); m=Math.max(m,rg.getBoundingClientRect().height); });
+      blk.style.height=Math.ceil(m)+'px'; }
     function fit(){
       var H=body.clientHeight, W=body.clientWidth; if(!H||!W) return;
-      paper.style.setProperty('--hlfs','19px');
-      var w19=hv.getBoundingClientRect().width;
-      var byH=(H*(low.matches?0.9:0.8))/(maxN*1.05)-0.2, byW=19*W/w19*0.98;
-      var fs=Math.floor(Math.min(19,byH,byW)*10)/10;
-      paper.style.setProperty('--hlfs',Math.max(9,fs)+'px');
+      paper.style.removeProperty('--hlgap');
+      var byH=(H*(low.matches?0.9:0.8))/(maxN*1.05)-0.2;
+      var fs=Math.max(9,Math.floor(Math.min(19,byH)*10)/10);
+      paper.style.setProperty('--hlfs',fs+'px'); colH();
+      /* 幅が足りないときは、まず空きを詰める。空きをなくしても足りないときだけ字を小さくする */
+      var gaps=hv.querySelectorAll('.hsp'), gw=fs*1.6, w=hv.getBoundingClientRect().width;
+      if(w>W*0.98){
+        var g=Math.floor(Math.max(0,gw-(w-W*0.98)/gaps.length)*10)/10;
+        paper.style.setProperty('--hlgap',g+'px');
+        if(g===0){ w=hv.getBoundingClientRect().width; paper.style.setProperty('--hlfs',Math.max(9,Math.floor(fs*W*0.98/w*10)/10)+'px'); colH(); }
+      }
     }
     window.addEventListener('resize',function(){ if(!wrap.hidden) fit(); });
+    if(document.fonts && document.fonts.addEventListener) document.fonts.addEventListener('loadingdone',function(){ if(!wrap.hidden) fit(); });
     function openL(){ wrap.hidden=false; fit(); closeBtn.focus({preventScroll:true}); }
     function closeL(){ wrap.hidden=true; c.focus(); }
     c.addEventListener('click',function(e){ e.stopPropagation(); openL(); });
